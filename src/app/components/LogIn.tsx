@@ -21,7 +21,7 @@ export default function LogIn() {
               required
               className="w-full h-full flex items-center justify-center front-sans border-0 bg-transparent text-[#ffffff] p-5 focus:outline-none"
             />
-            <div className="user w-[12%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/user.svg')] mr-2 sm:mr-0"></div>
+            <div className="user w-[12%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/user.svg')] mr-2 sm:mr-0 lg:mr-[2px]"></div>
           </div>
 
           <div className="input_pass h-[30%] w-[85%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.25)] rounded-[15px] bg-transparent shadow-[0_5px_10px_rgba(0,0,0,0.3)] mt-4">

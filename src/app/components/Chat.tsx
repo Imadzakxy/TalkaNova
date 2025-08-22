@@ -25,8 +25,7 @@ export default function Chat() {
     name?: string;
     photo?: string;
   } | null>(() => {
-    const saved = localStorage.getItem("activeChat");
-    return saved ? JSON.parse(saved) : { id: "general", type: "general" };
+    return { id: "general", type: "general" };
   });
 
   interface ChatMessage {
@@ -34,26 +33,18 @@ export default function Chat() {
     text: string;
     sender: string;
   }
-  const [messages, setMessages] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Code exécuté uniquement dans le navigateur
-    const stored = localStorage.getItem("messages");
-    if (stored) {
-      setMessages(JSON.parse(stored));
-    }
-  }, []);
   if (!isMobile) {
     return (
       <>
         <div className="page h-full w-full grid grid-cols-5 grid-rows-10">
           <div className=" search col-start-1 row-start-1 border-1 border-[#33A1E040] flex items-center justify-center">
             <div className="search_bar w-[90%] h-[75%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[#FFFFFF30] font-sans shadow-[0_0_15px_#33A1E0]">
-              <div className="loop w-[12%] h-[80%] bg-no-repeat bg-contain bg-center bg-[url('/loop.svg')] ml-2 "></div>
+              <div className="loop w-[13%] h-[70%] bg-no-repeat bg-contain bg-center bg-[url('/loop.svg')] ml-3"></div>
               <input
                 type="text"
                 placeholder="Search"
-                className="w-full h-full border-0 bg-transparent text-[#FFFFFF60] text-[13px] sm:text-[16px] lg:text-lg p-2 focus:outline-none"
+                className="w-full h-full border-0 bg-transparent text-[#FFFFFF60] text-[16px] sm:text-[25px] lg:text-3xl p-2 focus:outline-none"
               />
             </div>
           </div>
@@ -66,18 +57,18 @@ export default function Chat() {
                   setActiveChat({ id: "general", type: "general" })
                 }
               >
-                <p className="text-[#33A1E0] text-[11px] sm:text-[16px] lg:text-xl font-bold p-1 ml-2">
+                <p className="text-[#33A1E0] text-[11px] sm:text-xl lg:text-4xl font-bold p-1 ml-2">
                   # général
                 </p>
               </div>
               <div
-                className="friend1 w-full h-[10%] border-1 border-[#33A1E040] border-t-0 border-r-0 cursor-pointer flex items-center"
+                className="friend1 w-full h-[10%] border-b-1 border-[#33A1E040] cursor-pointer flex items-center"
                 onClick={() =>
                   setActiveChat({ id: "friend1", type: "private" })
                 }
               >
                 <div className="profile w-[20%] h-[80%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
-                <p className="text-[#33A1E0] text-[13px] sm:text-[16px] lg:text-lg p-1 flex justify-center items-center">
+                <p className="text-[#33A1E0] text-[13px] sm:text-xl lg:text-3xl p-1 flex justify-center items-center">
                   Name
                 </p>
               </div>
@@ -88,7 +79,7 @@ export default function Chat() {
                 }
               >
                 <div className="profile w-[20%] h-[80%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
-                <p className="text-[#33A1E0] text-[13px] sm:text-[16px] lg:text-lg p-1 flex items-center justify-start">
+                <p className="text-[#33A1E0] text-[13px] sm:text-xl lg:text-3xl p-1 flex items-center justify-start">
                   Name
                 </p>
               </div>
@@ -96,7 +87,7 @@ export default function Chat() {
 
             <div className="parameters w-full h-[10%] border-1 border-[#33A1E040] flex flex-end items-center justify-center ">
               <div className="profile w-[28%] h-[90%] bg-center bg-contain bg-no-repeat bg-[url('/profile.svg')]"></div>
-              <p className="name text-[#FFFFFF] text-[11px] mt-2 sm:text-[16px] lg:text-lg p-1 w-[80%] h-full flex items-center justify-start">
+              <p className="name text-[#FFFFFF] text-[11px] mt-2 sm:text-xl lg:text-3xl p-1 w-[80%] h-full flex items-center justify-start">
                 MEEEE
               </p>
               <Link
@@ -107,7 +98,7 @@ export default function Chat() {
           </div>
           {activeChat?.type === "general" ? (
             <div className="bar col-span-4 col-start-2 row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center justify-between">
-              <h1 className="h-full flex flex-end justify-center items-center text-lg sm:text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
+              <h1 className="h-full flex flex-end justify-center items-center text-xl sm:text-4xl lg:text-6xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
                 TalkaNova
               </h1>
               <button className="members w-[5%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
@@ -118,7 +109,7 @@ export default function Chat() {
               <p className="text-[#33A1E0] text-2xl p-1 flex items-center justify-start">
                 {activeChat?.id}
               </p>
-              <h1 className="h-full flex flex-end justify-end items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
+              <h1 className="h-full flex flex-end justify-end items-center text-xl sm:text-4xl lg:text-6xl  font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
                 TalkaNova
               </h1>
             </div>
@@ -129,14 +120,14 @@ export default function Chat() {
 
             <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
               <div className="send_bar h-[94%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
-                <button className="add_file lg:w-9.5 lg:h-9 sm:w-7 sm:h-6 w-4.5 h-4 bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-1 sm:ml-2">
-                  <div className="add w-[75%] h-[70%] bg-center bg-contain bg-no-repeat bg-[url('/add.svg')]"></div>
+                <button className="add_file sm:w-[5%] sm:h-[50%] lg:w-[3.4%] lg:h-[70%] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-1 sm:ml-2 lg:ml-3">
+                  <div className="add w-[75%] h-[70%] bg-contain bg-center bg-no-repeat bg-[url('/add.svg')]"></div>
                 </button>
                 <input
                   type="text"
                   placeholder="Send message ..."
                   required
-                  className="w-full h-full text-[13px] sm:text-[16px] lg:text-lg flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-nonen ml-2 focus:outline-none"
+                  className="w-full h-full text-[13px] sm:text-xl lg:text-3xl flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-nonen ml-1 sm:ml-2 lg:ml-3 focus:outline-none"
                 />
                 <button className="send w-[5%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2"></button>
               </div>
@@ -207,7 +198,7 @@ export default function Chat() {
 
               <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
                 <div className="profile w-[20%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/profile.svg')]"></div>
-                <p className="name text-[#FFFFFF] mt-2 text-2xl p-1 w-[80%] h-full flex items-center justify-start">
+                <p className="name text-[#FFFFFF] mt-2 text-2xl w-[80%] h-[80%] flex items-center justify-start">
                   MEEEE
                 </p>
                 <Link
