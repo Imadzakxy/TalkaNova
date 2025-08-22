@@ -18,6 +18,7 @@ function useIsMobile() {
 
 export default function Chat() {
   const isMobile = useIsMobile();
+
   const [activeChat, setActiveChat] = useState<{
     id: string;
     type: "general" | "private";
@@ -27,12 +28,21 @@ export default function Chat() {
     const saved = localStorage.getItem("activeChat");
     return saved ? JSON.parse(saved) : { id: "general", type: "general" };
   });
-  useEffect(() => {
-    if (activeChat) {
-      localStorage.setItem("activeChat", JSON.stringify(activeChat));
-    }
-  }, [activeChat]);
 
+  interface ChatMessage {
+    id: string;
+    text: string;
+    sender: string;
+  }
+  const [messages, setMessages] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Code exécuté uniquement dans le navigateur
+    const stored = localStorage.getItem("messages");
+    if (stored) {
+      setMessages(JSON.parse(stored));
+    }
+  }, []);
   if (!isMobile) {
     return (
       <>
