@@ -3,11 +3,11 @@ import Link from "next/link";
 export default function LogIn() {
   return (
     <>
-      <h1 className="h-25 flex justify-center items-center text-4xl font-[ZenDots] text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ">
+      <h1 className="h-25 flex justify-center items-center text-6xl font-[ZenDots] text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ">
         TalkaNova
       </h1>
       <form
-        className="box lg:h-[57%] sm:h-[50%] h-[38%] w-[85%]  shadow-[0_10px_27px_rgba(51,161,224,0.40)]  flex flex-col justify-start items-center border-[rgba(255,255,255,0.25)] bg-[rgba(255,255,255,0.05)] border-[1px] rounded-[20px] text-[11px] lg:text-sm z-10 mx-auto  sm:mt-12 mt-29"
+        className="box lg:h-[57%] sm:h-[50%] h-[38%] w-[85%]  shadow-[0_10px_27px_rgba(51,161,224,0.40)]  flex flex-col justify-start items-center border-[rgba(255,255,255,0.25)] bg-[rgba(255,255,255,0.05)] border-[1px] rounded-[20px] text-[15px] lg:text-lg z-10 mx-auto  sm:mt-12 mt-29"
         style={{
           maxWidth: "520px",
           minWidth: "320px",
@@ -35,7 +35,7 @@ export default function LogIn() {
           </div>
         </div>
 
-        <div className="remember w-[90%] h-[10%] sm:h-[18%] flex items-center font-sans justify-between text-[12px] sm:text-[14.5px] p-5">
+        <div className="remember w-[90%] h-[10%] sm:h-[18%] flex items-center font-sans justify-between text-[15px] lg:text-lg p-5">
           <span className="rem flex items-center">
             <label className="relative flex items-center cursor-pointer">
               <input
@@ -54,7 +54,7 @@ export default function LogIn() {
           </Link>
         </div>
 
-        <div className="login h-[40%] sm:h-[27%] w-full flex items-center justify-center">
+        <div className="login h-[40%] sm:h-[20%] lg:h-[27%] w-full flex items-center justify-center">
           <Link
             href="/chat"
             className=" h-[42px] w-[48%] sm:h-[50px] sm:w-[60%] bg-none"
