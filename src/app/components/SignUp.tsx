@@ -2,31 +2,82 @@
 import Link from "next/link";
 import client from "../config/supabsaeClient";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function SignUp() {
-  // const SignUp = async () => {
-  //   let { user, error } = await client.auth.signUp({
-  //     email: stat.email,
-  //     password: stat.password,
-  //   });
-  // };
+  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
 
   const [username, setUsername] = useState("");
+  const regex = /^(?!.*[._]{2})(?![._])[a-zA-Z0-9._]{3,20}(?<![._])$/;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, ImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const ImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImagePreview(url);
+    if (!file) return;
+
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
+    if (!validTypes.includes(file.type)) {
+      alert("Format non supporté. Choisir jpg, jpeg, png ou gif.");
+      return;
     }
+
+    setImageFile(file);
+    ImagePreview(URL.createObjectURL(file));
   };
 
-  const handleRemoveImage = () => {
-    setImagePreview(null);
+  const removeImage = () => {
+    setImageFile(null);
+    ImagePreview(null);
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) return alert("Passwords don't match");
+    if (password.length < 8) return alert("Password must be 8+ chars");
+    if (!regex.test(username)) return alert("Username is not valid");
+
+    // 1. Créer le compte
+    const { data, error } = await client.auth.signUp({ email, password });
+    if (error) return alert(error.message);
+    if (!data.user) return;
+
+    // 2. Upload de l’image si présente
+    let imageUrl: string | null = null;
+
+    if (imageFile) {
+      const ext = imageFile.name.split(".").pop();
+      const path = `avatars/${data.user.id}.${ext}`;
+      const { data: uploadData, error: uploadError } = await client.storage
+        .from("avatars")
+        .upload(path, imageFile, { cacheControl: "3600", upsert: true });
+
+      if (uploadError) {
+        console.error(uploadError);
+      } else {
+        imageUrl = client.storage.from("avatars").getPublicUrl(path)
+          .data.publicUrl;
+      }
+    } else {
+      imageUrl = "public/profile/default.png";
+    }
+
+    // 3. Insérer le profil
+    const { error: insertError } = await client.from("profile").insert({
+      id: data.user.id,
+      user_name: username,
+      email: email,
+      pfp_url: imageUrl,
+    });
+
+    if (insertError) {
+      console.error(insertError);
+    } else {
+      alert("Check your email for confirmation!");
+    }
   };
 
   return (
@@ -92,34 +143,31 @@ export default function SignUp() {
         </div>
 
         {/* Profile image upload */}
-        <div className="input_img w-[80%] h-[35%] cursor-pointer border-2 border-dashed border-[rgba(255,255,255,0.25)] text-[#d0d0d0] rounded-[15px] flex items-center justify-center shadow-[0_5px_10px_rgba(0,0,0,0.3)] mt-4 ">
-          <div className="add w-5 h-5 sm:w-8 sm:h-8  bg-contain bg-center bg-no-repeat bg-[url('/add.svg')] hover:text-[#33A1E0]"></div>
-          {imagePreview && (
-            <button
-              onClick={handleRemoveImage}
-              className="absolute top-2 right-2 flex justify-center items-center h-8 w-8 rounded-full bg-black/50 text-white text-xl hover:bg-black/70"
-            >
-              &times;
-            </button>
+        <div className="relative w-[80%] h-[35%] cursor-pointer border-2 border-dashed border-[rgba(255,255,255,0.25)] text-[#d0d0d0] rounded-[15px]  shadow-[0_5px_10px_rgba(0,0,0,0.3)] p-2 mt-4 ">
+          {imagePreview ? (
+            <>
+              <Image
+                src={imagePreview}
+                alt="Preview"
+                fill
+                className="object-cover bg-contain bg-no-repeat bg-center rounded-[15px]"
+              />
+              <button
+                onClick={removeImage}
+                className="absolute top-3 right-2 text-xl text-[#041d2d] hover:text-[#33A1E0] px-2 py-1 z-10"
+              >
+                X
+              </button>
+            </>
+          ) : (
+            <div className="add w-full h-full bg-center bg-contain bg-no-repeat bg-[url('/add.svg')]"></div>
           )}
-
-          {/* Icône Add au centre (visible seulement sans image) */}
-          {!imagePreview && (
-            <label
-              htmlFor="image-upload"
-              className="flex flex-col items-center justify-center text-[#d0d0d0] hover:text-[#33A1E0] cursor-pointer"
-            >
-              <div className="add w-8 h-8 bg-center bg-contain bg-no-repeat bg-[url('/add.svg')]"></div>
-              <span className="text-xs mt-2">Add Image</span>
-            </label>
-          )}
-
+          {/* Input invisible */}
           <input
             type="file"
-            id="image-upload"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleImageChange}
+            accept="image/png,image/jpeg,image/jpg,image/gif"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={ImageChange}
           />
         </div>
 
@@ -131,7 +179,7 @@ export default function SignUp() {
           >
             <button
               type="submit"
-              // onClick={handleSubmit}
+              onClick={handleSignUp}
               className="bt_sign h-full w-full rounded-[15] bg-[#154D71] shadow-[0_2px_4px_rgba(51,161,224,0.65)] text-white font-semibold flex items-center justify-center  hover:bg-[#33A1E0] hover:text-[#154D71] hover:cursor-pointer transition duration-300"
             >
               Sign up
