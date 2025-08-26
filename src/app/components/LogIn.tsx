@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import client from "../config/supabsaeClient";
 
 export default function LogIn() {
   return (

@@ -58,11 +58,11 @@ export default function SignUp() {
       if (uploadError) {
         console.error(uploadError);
       } else {
-        imageUrl = client.storage.from("avatars").getPublicUrl(path)
+        imageUrl = client.storage.from("avatars").getPublicUrl("profile.svg")
           .data.publicUrl;
       }
     } else {
-      imageUrl = "public/profile/default.png";
+      imageUrl = "public/profile.svg";
     }
 
     // 3. Insérer le profil
@@ -71,6 +71,7 @@ export default function SignUp() {
       user_name: username,
       email: email,
       pfp_url: imageUrl,
+      password: password,
     });
 
     if (insertError) {
