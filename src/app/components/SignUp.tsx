@@ -2,6 +2,7 @@
 import Link from "next/link";
 import client from "../config/supabsaeClient";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function SignUp() {
@@ -14,6 +15,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [imagePreview, ImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const ImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -78,6 +80,7 @@ export default function SignUp() {
       console.error(insertError);
     } else {
       alert("Check your email for confirmation!");
+      router.push("/chat");
     }
   };
 
@@ -88,6 +91,7 @@ export default function SignUp() {
       </h1>
       {/* Form container */}
       <form
+        onSubmit={handleSignUp}
         className="box h-[53%] sm:h-[60%] lg:h-[70%] w-[80%] mx-auto flex flex-col items-center justify-center bg-[rgba(255,255,255,0.05)] backdrop-transparent border-1 border-[rgba(255,255,255,0.25)] shadow-[0_10px_27px_rgba(51,161,224,0.40)] text-[14px] lg:text-lg rounded-[20px] z-10 mt-15 sm:mt-3"
         style={{ maxWidth: "520px" }}
       >
@@ -174,18 +178,12 @@ export default function SignUp() {
 
         {/* Sign up button */}
         <div className="flex items-center justify-center w-full h-[42%] sm:h-[18%] mt-4 ">
-          <Link
-            href="/chat"
-            className="inline-block h-[38px] w-[40%] sm:h-[50px] sm:w-[60%] bg-none"
+          <button
+            type="submit"
+            className="bt_sign h-[38px] w-[40%] sm:h-[50px] sm:w-[60%] bg-none rounded-[15] bg-[#154D71] shadow-[0_2px_4px_rgba(51,161,224,0.65)] text-white font-semibold flex items-center justify-center  hover:bg-[#33A1E0] hover:text-[#154D71] hover:cursor-pointer transition duration-300"
           >
-            <button
-              type="submit"
-              onClick={handleSignUp}
-              className="bt_sign h-full w-full rounded-[15] bg-[#154D71] shadow-[0_2px_4px_rgba(51,161,224,0.65)] text-white font-semibold flex items-center justify-center  hover:bg-[#33A1E0] hover:text-[#154D71] hover:cursor-pointer transition duration-300"
-            >
-              Sign up
-            </button>
-          </Link>
+            Sign up
+          </button>
         </div>
 
         {/* Link to Log in */}

@@ -1,14 +1,48 @@
 "use client";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import client from "../config/supabsaeClient";
 
 export default function LogIn() {
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleLogIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let email = identifier;
+    if (!email.includes("@")) {
+      const { data, error } = await client
+        .from("profile")
+        .select("email")
+        .eq("user_name", identifier)
+        .single();
+      if (error || !data) {
+        alert("Username not found");
+        return;
+      }
+      email = data.email;
+    }
+    const { error } = await client.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (!error) {
+      router.push("/chat");
+    } else {
+      alert(error.message);
+    }
+  };
+
   return (
     <>
       <h1 className="h-25 flex justify-center items-center text-6xl font-[ZenDots] text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ">
         TalkaNova
       </h1>
       <form
+        onSubmit={handleLogIn}
         className="box lg:h-[57%] sm:h-[50%] h-[38%] w-[85%]  shadow-[0_10px_27px_rgba(51,161,224,0.40)]  flex flex-col justify-start items-center border-[rgba(255,255,255,0.25)] bg-[rgba(255,255,255,0.05)] border-[1px] rounded-[20px] text-[15px] lg:text-lg z-10 mx-auto  sm:mt-12 mt-29"
         style={{
           maxWidth: "520px",
@@ -18,8 +52,10 @@ export default function LogIn() {
         <div className="inputs h-[40%] w-full flex flex-col items-center justify-center">
           <div className="input_uname h-[30%] w-[85%] front-sans flex items-center justify-center border-1 border-[rgba(255,255,255,0.25)] rounded-[15px] bg-transparent shadow-[0_5px_10px_rgba(0,0,0,0.3)] mt-4">
             <input
-              type="name"
+              type="text"
               placeholder="Username or email"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               required
               className="w-full h-full flex items-center justify-center front-sans border-0 bg-transparent text-[#ffffff] p-5 focus:outline-none"
             />
@@ -30,6 +66,8 @@ export default function LogIn() {
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full h-full flex items-center justify-center border-0 bg-transparent text-[#ffffff] p-5 focus:outline-none"
             />
@@ -57,17 +95,12 @@ export default function LogIn() {
         </div>
 
         <div className="login h-[40%] sm:h-[20%] lg:h-[27%] w-full flex items-center justify-center">
-          <Link
-            href="/chat"
-            className=" h-[42px] w-[48%] sm:h-[50px] sm:w-[60%] bg-none"
+          <button
+            type="submit"
+            className="btn h-[42px] w-[48%] sm:h-[50px] sm:w-[60%] bg-none shadow-[0_2px_4px_rgba(51,161,224,0.65)] rounded-[15px] bg-[#154D71] text-white font-semibold flex items-center justify-center hover:bg-[#33A1E0] hover:text-[#154D71] cursor-pointer"
           >
-            <button
-              type="submit"
-              className="btn w-full h-full shadow-[0_2px_4px_rgba(51,161,224,0.65)] rounded-[15px] bg-[#154D71] text-white font-semibold flex items-center justify-center hover:bg-[#33A1E0] hover:text-[#154D71] cursor-pointer"
-            >
-              Log in
-            </button>
-          </Link>
+            Log in
+          </button>
         </div>
 
         <div className="register w-full flex items-end justify-center text-[#d0d0d0] font-sans flex-grow">
