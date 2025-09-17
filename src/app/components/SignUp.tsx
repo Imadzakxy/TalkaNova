@@ -61,16 +61,10 @@ export default function SignUp() {
       if (uploadError) {
         console.error("Upload error:", uploadError);
       } else {
-      // Correction ici
-        const { data: publicData, error: publicError } = client.storage
+        const { data: publicData } = client.storage
           .from("avatars")
           .getPublicUrl(path);
-
-        if (publicError) {
-          console.error("Get public URL error:", publicError);
-        } else {
-          imageUrl = publicData.publicUrl; // <-- imageUrl récupérée correctement
-        }
+        imageUrl = publicData.publicUrl;
       }
     }
 
