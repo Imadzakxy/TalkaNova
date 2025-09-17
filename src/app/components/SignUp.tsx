@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function SignUp() {
-  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-
   const [username, setUsername] = useState("");
   const regex = /^(?!.*[._]{2})(?![._])[a-zA-Z0-9._]{3,20}(?<![._])$/;
   const [email, setEmail] = useState("");
@@ -17,6 +15,8 @@ export default function SignUp() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const router = useRouter();
 
+  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+  
   const ImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -30,7 +30,7 @@ export default function SignUp() {
     setImageFile(file);
     ImagePreview(URL.createObjectURL(file));
   };
-
+  
   const removeImage = () => {
     setImageFile(null);
     ImagePreview(null);
@@ -53,19 +53,28 @@ export default function SignUp() {
     if (imageFile) {
       const ext = imageFile.name.split(".").pop();
       const path = `avatars/${data.user.id}.${ext}`;
-      const { data: uploadData, error: uploadError } = await client.storage
+
+      const { error: uploadError } = await client.storage
         .from("avatars")
         .upload(path, imageFile, { cacheControl: "3600", upsert: true });
 
       if (uploadError) {
-        console.error(uploadError);
+        console.error("Upload error:", uploadError);
       } else {
-        imageUrl = client.storage.from("avatars").getPublicUrl("profile.svg")
-          .data.publicUrl;
+      // Correction ici
+        const { data: publicData, error: publicError } = client.storage
+          .from("avatars")
+          .getPublicUrl(path);
+
+        if (publicError) {
+          console.error("Get public URL error:", publicError);
+        } else {
+          imageUrl = publicData.publicUrl; // <-- imageUrl récupérée correctement
+        }
       }
-    } else {
-      imageUrl = "public/profile.svg";
     }
+
+  if (!imageUrl) imageUrl = '/profile.svg';
 
     // 3. Insérer le profil
     const { error: insertError } = await client.from("profile").insert({
@@ -73,7 +82,6 @@ export default function SignUp() {
       user_name: username,
       email: email,
       pfp_url: imageUrl,
-      password: password,
     });
 
     if (insertError) {

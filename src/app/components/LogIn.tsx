@@ -24,15 +24,16 @@ export default function LogIn() {
       }
       email = data.email;
     }
+
     const { error } = await client.auth.signInWithPassword({
-      email,
-      password,
+        email,
+        password,
     });
 
     if (!error) {
-      router.push("/chat");
+        router.push("/chat");
     } else {
-      alert(error.message);
+        alert(error.message);
     }
   };
 
@@ -53,6 +54,7 @@ export default function LogIn() {
           <div className="input_uname h-[30%] w-[85%] front-sans flex items-center justify-center border-1 border-[rgba(255,255,255,0.25)] rounded-[15px] bg-transparent shadow-[0_5px_10px_rgba(0,0,0,0.3)] mt-4">
             <input
               type="text"
+              autoComplete="off"
               placeholder="Username or email"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
