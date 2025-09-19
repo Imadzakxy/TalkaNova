@@ -88,7 +88,7 @@ export default function SignUp() {
 
   return (
     <>
-      <h1 className="h-25 flex justify-center items-center text-4xl font-[ZenDots] text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)]">
+      <h1 className="h-25 flex justify-center items-center text-4xl sm:text-5xl font-[ZenDots] text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)]">
         TalkaNova
       </h1>
       {/* Form container */}
