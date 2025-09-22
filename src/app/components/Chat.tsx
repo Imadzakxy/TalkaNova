@@ -103,80 +103,67 @@ export default function Chat() {
   
   const roomRef = useRef<RealtimeChannel | null>(null);
 
-  useEffect(()=>{
-    if(!session?.user){
+   
+  useEffect(() => {
+    if (!session?.user) {
       setUsersOnline([]);
       return;
     }
-    
-    if (roomRef.current && typeof roomRef.current === "object" && "on" in roomRef.current) {
+
+    if (roomRef.current) {
       try {
         client.removeChannel(roomRef.current);
-      }catch (err) {
+      } catch (err) {
         console.error("Erreur removeChannel:", err);
       }
       roomRef.current = null;
     }
 
+    // 🔥 canal broadcast (PAS realtime:room_one)
     const roomOne = client.channel("room_one", {
-      config:{
-        presence:{
-          key: session?.user?.id,
-        },
+      config: {
+        broadcast: { self: true }, // nécessaire pour broadcast
+        presence: { key: session.user.id },
       },
     });
 
-    roomRef.current = roomOne; 
-    
-    roomOne.on("broadcast", {event:"message"}, (payload) =>{
+    roomRef.current = roomOne;
+
+    // 📩 écouter les messages
+    roomOne.on("broadcast", { event: "message" }, (payload) => {
       console.log("📩 Message reçu de Supabase:", payload);
-      setMessages((prevMessages)=>[...prevMessages, payload.payload]);
+      setMessages((prev) => [...prev, payload.payload]);
     });
 
-    roomOne.subscribe(async (status)=>{
-      if(status === "SUBSCRIBED"){
-        await roomOne.track({ id:session?.user?.id, }); 
-      } 
+    // 🔗 abonnement + présence
+    roomOne.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await roomOne.track({ id: session.user.id });
+      }
     });
 
-    /*roomOne.on("presence", {event: "sync"}, () => {
+    // 👥 présence sync
+    /*roomOne.on("presence", { event: "sync" }, () => {
       const state = roomOne.presenceState();
       setUsersOnline(Object.keys(state));
     });*/
-    
-    return () => {
-      try {
-      if (roomRef.current) {
-        roomRef.current.unsubscribe();
-        client.removeChannel(roomRef.current);
-        roomRef.current = null;
-      }
-      if (client.realtime && client.realtime.socket) {
-        client.realtime.socket.disconnect();
-        client.realtime.socket = null; // optionnel, mais safe
-      }
-      } catch (err) {
-        console.error("Erreur cleanup websocket:", err);
-      }
-    };
-  },[session]);
 
-  const sendMessage = async (e)=>{
-    e.preventDefault();
+    return () => {
+      roomOne.unsubscribe();
+      client.removeChannel(roomOne);
+    };
+  }, [session]); // 👈 dépendance sur session
+
+  
+  const sendMessage = (content: string) => {
     if (!roomRef.current) return;
 
-    await roomRef.current.send({
-      type:"broadcast",
-      event:"message",
-      payload:{
-        message: newMessage,
-        user_name:profile?.user_name,
-        avatar:profile?.pfp_url,
-        timestamp: new Date().toISOString(),
-      },
+    roomRef.current.send({
+      type: "broadcast",
+      event: "message",
+      payload: { content },
     });
-    setNewMessage("");
-  }; 
+  };
 
   if(session){
     /*if(!isPc){
@@ -399,7 +386,7 @@ export default function Chat() {
             <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
               {messages.map((msg, idx)=>{
                 console.log(msg.message);
-                return <p key={idx}>{msg.message}</p>
+                return <p key={idx} className="msg p-2 test-xl text-blood">{msg.message}</p>
               })}
             </div>
             
