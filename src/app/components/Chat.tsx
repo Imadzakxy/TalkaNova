@@ -92,7 +92,7 @@ export default function Chat() {
     }
   };
   
-  const roomRef = useRef<any[]>([]);
+  const roomRef = useRef<any>(null);
 
   useEffect(()=>{
     if(!session?.user){
