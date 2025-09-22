@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import client from "../config/supabsaeClient";
+import { RealtimeChannel } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 
@@ -92,7 +93,7 @@ export default function Chat() {
     }
   };
   
-  const roomRef = useRef<any>(null);
+  const roomRef = useRef<RealtimeChannel>(null);
 
   useEffect(()=>{
     if(!session?.user){
