@@ -30,7 +30,7 @@ type ChatMessage = {
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<any | null>(null);
+  const [profile, setProfile] = useState<unknown | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [usersOnline, setUsersOnline] = useState([]);
