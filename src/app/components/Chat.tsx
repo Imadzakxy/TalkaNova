@@ -139,10 +139,10 @@ export default function Chat() {
       } 
     });
 
-    roomOne.on("presence", {event: "sync"}, () => {
+    /*roomOne.on("presence", {event: "sync"}, () => {
       const state = roomOne.presenceState();
       setUsersOnline(Object.keys(state));
-    });
+    });*/
     
     return () => {
       try {
