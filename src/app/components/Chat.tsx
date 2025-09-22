@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import client from "../config/supabsaeClient";
@@ -60,6 +59,7 @@ export default function Chat() {
         fetchProfile(session.user.id);
       } else {
         setProfile(null);
+        router.push("/");
       }
     });
 
@@ -92,13 +92,23 @@ export default function Chat() {
     }
   };
   
-  const roomRef = useRef<any>(null);
+  const roomRef = useRef<any[]>([]);
 
   useEffect(()=>{
     if(!session?.user){
       setUsersOnline([]);
       return;
     }
+    
+    if (roomRef.current && typeof roomRef.current === "object" && "on" in roomRef.current) {
+      try {
+        client.removeChannel(roomRef.current);
+      }catch (err) {
+        console.error("Erreur removeChannel:", err);
+      }
+      roomRef.current = null;
+    }
+
     const roomOne = client.channel("room_one", {
       config:{
         presence:{
@@ -110,16 +120,14 @@ export default function Chat() {
     roomRef.current = roomOne; 
     
     roomOne.on("broadcast", {event:"message"}, (payload) =>{
-      console.log("📩 Broadcast reçu:", payload);
+      console.log("📩 Message reçu de Supabase:", payload);
       setMessages((prevMessages)=>[...prevMessages, payload.payload]);
     });
 
     roomOne.subscribe(async (status)=>{
       if(status === "SUBSCRIBED"){
-        await roomOne.track({
-          id:session?.user?.id,
-        });
-      }
+        await roomOne.track({ id:session?.user?.id, }); 
+      } 
     });
 
     roomOne.on("presence", {event: "sync"}, () => {
@@ -128,7 +136,20 @@ export default function Chat() {
     });
     
     return () => {
-      roomOne.unsubscribe();
+      try {
+      if (roomRef.current) {
+        client.realtime.disconnect(); 
+        roomRef.current.unsubscribe();
+        client.removeChannel(roomRef.current);
+        roomRef.current = null;
+      }
+      if (client.realtime && client.realtime.socket) {
+        client.realtime.socket.disconnect();
+        client.realtime.socket = null; // optionnel, mais safe
+      }
+      } catch (err) {
+        console.error("Erreur cleanup websocket:", err);
+      }
     };
   },[session]);
 
@@ -150,7 +171,7 @@ export default function Chat() {
   }; 
 
   if(session){
-    if(!isPc){
+    /*if(!isPc){
       return (
       <>
         <div className="h-screen">
@@ -276,7 +297,7 @@ export default function Chat() {
           </div>
         </>
       );
-    }
+    }*/
     return (
       <>
         <div className="page h-full w-full grid grid-cols-5 grid-rows-10">
@@ -369,7 +390,8 @@ export default function Chat() {
 
             <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
               {messages.map((msg, idx)=>{
-                return <p className="z-10">{msg.message}</p>
+                console.log(msg.message);
+                return <p key={idx}>{msg.message}</p>
               })}
             </div>
             
