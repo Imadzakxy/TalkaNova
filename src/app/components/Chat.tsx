@@ -5,6 +5,7 @@ import client from "../config/supabsaeClient";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
+import type { Session } from "@supabase/supabase-js";
 
 function useIsPc() {
   const [isPc, setIsPc] = useState(false);
@@ -19,11 +20,18 @@ function useIsPc() {
   return isPc;
 }
 
+type ChatMessage = {
+  message: string;
+  user_name?: string;
+  avatar?: string;
+  timestamp: string;
+};
+
 export default function Chat() {
   const isPc = useIsPc();
-  const [session, setSession] = useState([]);
-  const [profile, setProfile] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [usersOnline, setUsersOnline] = useState([]);
   const router = useRouter();
@@ -93,7 +101,7 @@ export default function Chat() {
     }
   };
   
-  const roomRef = useRef<RealtimeChannel>(null);
+  const roomRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(()=>{
     if(!session?.user){
@@ -139,7 +147,6 @@ export default function Chat() {
     return () => {
       try {
       if (roomRef.current) {
-        client.realtime.disconnect(); 
         roomRef.current.unsubscribe();
         client.removeChannel(roomRef.current);
         roomRef.current = null;
