@@ -3,8 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import client from "../config/supabsaeClient";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
 import type { Session } from "@supabase/supabase-js";
 
 function useIsPc() {
@@ -26,11 +24,16 @@ type ChatMessage = {
   avatar?: string;
   timestamp: string;
 };
+type Profile = {
+  id: string;
+  username: string;
+  avatar_url?: string;
+};
 
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<unknown | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [usersOnline, setUsersOnline] = useState([]);
@@ -103,67 +106,62 @@ export default function Chat() {
   
   const roomRef = useRef<RealtimeChannel | null>(null);
 
-   
-  useEffect(() => {
-    if (!session?.user) {
+  useEffect(()=>{
+    if(!session?.user){
       setUsersOnline([]);
       return;
     }
 
-    if (roomRef.current) {
-      try {
-        client.removeChannel(roomRef.current);
-      } catch (err) {
-        console.error("Erreur removeChannel:", err);
-      }
-      roomRef.current = null;
-    }
-
-    // 🔥 canal broadcast (PAS realtime:room_one)
     const roomOne = client.channel("room_one", {
-      config: {
-        broadcast: { self: true }, // nécessaire pour broadcast
-        presence: { key: session.user.id },
+      config:{
+        broadcast: { self: true },
+        presence:{
+          key: session?.user?.id,
+        },
       },
     });
 
-    roomRef.current = roomOne;
-
-    // 📩 écouter les messages
-    roomOne.on("broadcast", { event: "message" }, (payload) => {
+    roomRef.current = roomOne; 
+    
+    roomOne.on("broadcast", {event:"message"}, (payload) =>{
       console.log("📩 Message reçu de Supabase:", payload);
-      setMessages((prev) => [...prev, payload.payload]);
+      setMessages((prevMessages)=>[...prevMessages, payload.payload]);
     });
 
-    // 🔗 abonnement + présence
-    roomOne.subscribe(async (status) => {
-      if (status === "SUBSCRIBED") {
-        await roomOne.track({ id: session.user.id });
-      }
+    roomOne.subscribe(async (status)=>{
+      if(status === "SUBSCRIBED"){
+        await roomOne.track({ id:session?.user?.id, }); 
+      } 
     });
 
-    // 👥 présence sync
-    /*roomOne.on("presence", { event: "sync" }, () => {
+    /*roomOne.on("presence", {event: "sync"}, () => {
       const state = roomOne.presenceState();
       setUsersOnline(Object.keys(state));
     });*/
-
+    
     return () => {
-      roomOne.unsubscribe();
+      roomRef.current.unsubscribe();
       client.removeChannel(roomOne);
+      roomRef.current = null;
     };
-  }, [session]); // 👈 dépendance sur session
+  },[session]);
 
-  
-  const sendMessage = (content: string) => {
+  const sendMessage = async (e)=>{
+    e.preventDefault();
     if (!roomRef.current) return;
 
-    roomRef.current.send({
-      type: "broadcast",
-      event: "message",
-      payload: { content },
+    await roomRef.current.send({
+      type:"broadcast",
+      event:"message",
+      payload:{
+        message: newMessage,
+        user_name:profile?.user_name,
+        avatar:profile?.pfp_url,
+        timestamp: new Date().toISOString(),
+      },
     });
-  };
+    setNewMessage("");
+  }; 
 
   if(session){
     /*if(!isPc){
@@ -386,7 +384,7 @@ export default function Chat() {
             <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
               {messages.map((msg, idx)=>{
                 console.log(msg.message);
-                return <p key={idx} className="msg p-2 test-xl text-blood">{msg.message}</p>
+                return <p key={idx} className="msg test-xl text-[#FFFFFF] text-blood">{msg.message}</p>
               })}
             </div>
             
