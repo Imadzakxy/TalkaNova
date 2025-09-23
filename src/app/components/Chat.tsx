@@ -19,6 +19,7 @@ function useIsPc() {
 }
 
 type ChatMessage = {
+  id: string;
   message: string;
   user_name?: string;
   avatar?: string;
