@@ -148,7 +148,7 @@ export default function Chat() {
     };
   },[session]);
 
-  const sendMessage = async (e)=>{
+  const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
     if (!roomRef.current) return;
 
