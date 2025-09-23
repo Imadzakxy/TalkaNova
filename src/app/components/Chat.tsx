@@ -169,7 +169,7 @@ export default function Chat() {
   }; 
 
   if(session){
-    /*if(!isPc){
+    if(!isPc){
       return (
       <>
         <div className="h-screen">
@@ -230,14 +230,23 @@ export default function Chat() {
                 </div>
 
                 <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
-                  <div className="profile w-[20%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/profile.svg')]"></div>
-                  <p className="name text-[#FFFFFF] mt-2 text-2xl w-[80%] h-[80%] flex items-center justify-start">
-                    MEEEE
-                  </p>
-                  <button
-                    onClick={handleLogout}
-                    className="prameter w-[12%] h-[60%] bg-center bg-contain bg-no-repeat bg-[url('/parametre.svg')] cursor-pointer flex justify-end items-center mr-2"
-                  ></button>
+                  <div 
+                    className="profile w-[28%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
+                    style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}
+                    ></div>
+                    <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
+                      <p className="name text-[#33A1E0] text-[7px] sm:text-xs lg:text-sm w-full h-[40%]">
+                        {profile?.user_name}
+                      </p>
+                      <p className="email text-[#2678A3] text-[5px] sm:text-[10px] lg:text-xs w-full h-[40%] pt-1">
+                        {profile?.email}
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="prameter w-[25%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/parametre.svg')] cursor-pointer flex justify-end items-center mr-2"
+                    ></button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -273,7 +282,12 @@ export default function Chat() {
               )}
 
               <div className="chat h-full w-full flex flex-col bg-transparent">
-                <div className="msgs h-full w-full"></div>
+                <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
+                  {messages.map((msg, idx)=>{
+                    console.log(msg.message);
+                    return <p key={idx} className="msg test-xl text-[#FFFFFF] text-blood">{msg.message}</p>
+                  })}
+                </div>
 
                 <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
                   <div className="send_bar h-[92%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
@@ -282,11 +296,13 @@ export default function Chat() {
                     </button>
                     <input
                       type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Send message ..."
-                        required
-                        className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-2 focus:outline-none"
-                      />
-                      <button className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2"></button>
+                      required
+                      className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-2 focus:outline-none"
+                    />
+                    <button className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2"></button>
                     </div>
                   </div>
                 </div>
@@ -295,7 +311,7 @@ export default function Chat() {
           </div>
         </>
       );
-    }*/
+    }
     return (
       <>
         <div className="page h-full w-full grid grid-cols-5 grid-rows-10">
