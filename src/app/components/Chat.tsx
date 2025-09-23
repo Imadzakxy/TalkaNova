@@ -170,7 +170,7 @@ export default function Chat() {
     setNewMessage("");
   };
   
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -436,7 +436,7 @@ export default function Chat() {
 
           <div className="chat  flex flex-col bg-transparent col-span-4 row-span-9 col-start-2 row-start-2">
 
-            <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
+            <div className="msgs p-2 flex-1 flex-col overflow-y-auto">
               {messages.map((msg, idx) => {
                 const isMe = msg.id === session.user.id; // check si c'est toi
 
