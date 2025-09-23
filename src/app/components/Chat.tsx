@@ -24,10 +24,13 @@ type ChatMessage = {
   avatar?: string;
   timestamp: string;
 };
+
+
 type Profile = {
   id: string;
-  username: string;
-  avatar_url?: string;
+  email: string;
+  user_name: string;
+  pfp_url: string;
 };
 
 export default function Chat() {
