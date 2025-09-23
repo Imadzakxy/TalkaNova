@@ -154,28 +154,36 @@ export default function Chat() {
   const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
     if (!roomRef.current) return;
+    if (newMessage.trim() === "") return;
 
     await roomRef.current.send({
       type:"broadcast",
       event:"message",
       payload:{
         message: newMessage,
+        id:profile?.id,
         user_name:profile?.user_name,
         avatar:profile?.pfp_url,
         timestamp: new Date().toISOString(),
       },
     });
     setNewMessage("");
-  }; 
+  };
+  
+  const messagesEndRef = useRef(null);
+  
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]); 
 
   if(session){
     if(!isPc){
       return (
       <>
-        <div className="h-screen">
+        <div className="flex flex-col h-screen">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
-              <div className="bar h-[7%] w-full bg-transparent flex flex-row items-center justify-between">
+              <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
                 <h1 className="h-full flex flex-end justify-center items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
                   TalkaNova
                 </h1>
@@ -280,11 +288,36 @@ export default function Chat() {
               )}
 
               <div className="chat h-full w-full flex flex-col bg-transparent">
-                <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
-                  {messages.map((msg, idx)=>{
-                    console.log(msg.message);
-                    return <p key={idx} className="msg test-xl text-[#FFFFFF] text-blood">{msg.message}</p>
+                <div className="msgs p-2 flex-1 flex-col overflow-y-auto">
+                  {messages.map((msg, idx) => {
+                    const isMe = msg.id === session.user.id; // check si c'est toi
+
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-start gap-2 mb-2 ${
+                          isMe ? "flex-row-reverse" : "flex-row"
+                        }`}
+                      >
+                        {/* Avatar */}
+                        <img
+                          src={msg.avatar}
+                          alt="pfp"
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+
+                        {/* Message */}
+                        <p
+                          className={`px-3 py-1 rounded-2xl max-w-[60%] text-white justify-start break-words whitespace-pre-wrap ${
+                            isMe ? "bg-blue-600 text-left max-w-[70%]" : "bg-gray-700 text-left max-w-[70%]"
+                          }`}
+                        >
+                          {msg.message}
+                        </p>
+                      </div>
+                    );
                   })}
+                  <div ref={messagesEndRef} />
                 </div>
 
                 <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
@@ -296,9 +329,9 @@ export default function Chat() {
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Send message ..."
+                      placeholder="send message ..."
                       required
-                      className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-2 focus:outline-none"
+                      className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#ffffff] focus:outline-none ml-2 focus:outline-none"
                     />
                     <button
                       onClick={sendMessage}
@@ -404,10 +437,35 @@ export default function Chat() {
           <div className="chat  flex flex-col bg-transparent col-span-4 row-span-9 col-start-2 row-start-2">
 
             <div className="msgs p-2 flex flex-col overflow-y-auto w-full h-full">
-              {messages.map((msg, idx)=>{
-                console.log(msg.message);
-                return <p key={idx} className="msg test-xl text-[#FFFFFF] text-blood">{msg.message}</p>
+              {messages.map((msg, idx) => {
+                const isMe = msg.id === session.user.id; // check si c'est toi
+
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-start gap-2 mb-2 ${
+                      isMe ? "flex-row-reverse" : "flex-row"
+                    }`}
+                  >
+                    {/* Avatar */}
+                    <img
+                      src={msg.avatar}
+                      alt="pfp"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+
+                    {/* Message */}
+                    <p
+                      className={`px-3 py-1 rounded-2xl max-w-[60%] text-white justify-start break-words whitespace-pre-wrap ${
+                        isMe ? "bg-blue-600 text-left" : "bg-gray-700 text-left"
+                      }`}
+                    >
+                      {msg.message}
+                    </p>
+                  </div>
+                );
               })}
+              <div ref={messagesEndRef} />
             </div>
             
             <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
@@ -415,10 +473,28 @@ export default function Chat() {
                 <button className="add_file w-[15px] h-[15px] sm:w-[25px] sm:h-[25px] lg:w-[36px] lg:h-[35px] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center">
                   <div className="add w-[75%] h-[70%] bg-contain bg-center bg-no-repeat bg-[url('/add.svg')]"></div>
                 </button>
-                <input
+                 <textarea
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage(e);
+                    }
+                    if (e.key === "Enter" && e.shiftKey) {
+                      e.preventDefault();
+                      
+                      const cursorPos = e.target.selectionStart;
+                      const value = e.target.value;
+                      const newValue = value.slice(0, cursorPos) + "\n" + value.slice(cursorPos);
+                      setNewMessage(newValue);
+
+                      setTimeout(() => {
+                        e.target.selectionStart = e.target.selectionEnd = cursorPos + 1;
+                      }, 0);
+                    }
+                  }}
                   placeholder="Send message ..."
                   required
                   className="w-full h-full text-[13px] sm:text-lg lg:text-2xl flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-1 sm:ml-2 lg:ml-3 focus:outline-none"

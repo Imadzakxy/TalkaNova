@@ -44,6 +44,13 @@ export default function LogIn() {
       </h1>
       <form
         onSubmit={handleLogIn}
+autoComplete="off"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleLogIn(e); // appelle directement ta fonction de login
+          }
+        }}
         className="box lg:h-[57%] sm:h-[50%] h-[38%] w-[85%]  shadow-[0_10px_27px_rgba(51,161,224,0.40)]  flex flex-col justify-start items-center border-[rgba(255,255,255,0.25)] bg-[rgba(255,255,255,0.05)] border-[1px] rounded-[20px] text-[15px] lg:text-lg z-10 mx-auto  sm:mt-12 mt-29"
         style={{
           maxWidth: "520px",
