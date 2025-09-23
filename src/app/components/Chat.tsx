@@ -153,7 +153,7 @@ export default function Chat() {
   },[session]);
 
   const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>| undefined)=>{
-    e.preventDefault();
+    e?.preventDefault();
     if (!roomRef.current) return;
     if (newMessage.trim() === "") return;
 
