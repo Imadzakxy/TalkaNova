@@ -300,14 +300,17 @@ export default function Chat() {
                       required
                       className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-2 focus:outline-none"
                     />
-                    <button className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2"></button>
-                    </div>
+                    <button
+                      onClick={sendMessage}
+                      className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2">
+                    </button>
                   </div>
                 </div>
               </div>
-            )}
-          </div>
-        </>
+            </div>
+          )}
+        </div>
+      </>
       );
     }
     return (
