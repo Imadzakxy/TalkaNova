@@ -230,26 +230,24 @@ export default function Chat() {
                 </div>
 
                 <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
-                  <div 
-                    className="profile w-[28%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
-                    style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}
-                    ></div>
-                    <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
-                      <p className="name text-[#33A1E0] text-[7px] sm:text-xs lg:text-sm w-full h-[40%]">
-                        {profile?.user_name}
-                      </p>
-                      <p className="email text-[#2678A3] text-[5px] sm:text-[10px] lg:text-xs w-full h-[40%] pt-1">
-                        {profile?.email}
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="prameter w-[25%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/parametre.svg')] cursor-pointer flex justify-end items-center mr-2"
-                    ></button>
+                  <div className="profile w-[28%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
+                    style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}></div>
+                    
+                  <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
+                    <p className="name text-[#33A1E0] text-[7px] sm:text-xs lg:text-sm w-full h-[40%]">
+                      {profile?.user_name}
+                    </p>
+                    <p className="email text-[#2678A3] text-[5px] sm:text-[10px] lg:text-xs w-full h-[40%] pt-1">
+                      {profile?.email}
+                    </p>
                   </div>
+                  <button
+                    onClick={handleLogout}
+                    className="prameter w-[25%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/parametre.svg')] cursor-pointer flex justify-end items-center mr-2"
+                  ></button>
                 </div>
               </div>
-            </div>
+           </div>
           )}
 
           {activeChat !== null && (
