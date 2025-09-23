@@ -239,14 +239,14 @@ export default function Chat() {
                 </div>
 
                 <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
-                  <div className="profile w-[28%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
+                  <div className="profile w-[20%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
                     style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}></div>
                     
                   <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
-                    <p className="name text-[#33A1E0] text-[7px] sm:text-xs lg:text-sm w-full h-[40%]">
+                    <p className="name text-[#33A1E0] text-sm w-full h-[40%]">
                       {profile?.user_name}
                     </p>
-                    <p className="email text-[#2678A3] text-[5px] sm:text-[10px] lg:text-xs w-full h-[40%] pt-1">
+                    <p className="email text-[#2678A3] text-xs w-full h-[40%] pt-1">
                       {profile?.email}
                     </p>
                   </div>
@@ -475,7 +475,6 @@ export default function Chat() {
                   <div className="add w-[75%] h-[70%] bg-contain bg-center bg-no-repeat bg-[url('/add.svg')]"></div>
                 </button>
                  <textarea
-                  type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => {
