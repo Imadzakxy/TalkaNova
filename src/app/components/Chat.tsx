@@ -75,7 +75,9 @@ export default function Chat() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
   
   const fetchProfile = async (userId: string) => {
@@ -140,7 +142,7 @@ export default function Chat() {
     });*/
     
     return () => {
-      roomRef.current.unsubscribe();
+      client.channel("room_one").unsubscribe();
       client.removeChannel(roomOne);
       roomRef.current = null;
     };
