@@ -152,7 +152,7 @@ export default function Chat() {
     };
   },[session]);
 
-  const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>)=>{
+  const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>| undefined)=>{
     e.preventDefault();
     if (!roomRef.current) return;
     if (newMessage.trim() === "") return;
@@ -480,7 +480,7 @@ export default function Chat() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
-                      sendMessage(e);
+                      sendMessage();
                     }
                     if (e.key === "Enter" && e.shiftKey) {
                       e.preventDefault();
