@@ -153,7 +153,6 @@ export default function Chat() {
   },[session]);
 
   const sendMessage = async ()=>{
-    e?.preventDefault();
     if (!roomRef.current) return;
     if (newMessage.trim() === "") return;
 
@@ -479,7 +478,7 @@ export default function Chat() {
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
-                      e?.preventDefault();
+                      e.preventDefault();
                       sendMessage();
                     }
                     if (e.key === "Enter" && e.shiftKey) {
