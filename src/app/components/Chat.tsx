@@ -152,7 +152,7 @@ export default function Chat() {
     };
   },[session]);
 
-  const sendMessage = async (e: React.MouseEvent<HTMLButtonElement>| undefined)=>{
+  const sendMessage = async ()=>{
     e?.preventDefault();
     if (!roomRef.current) return;
     if (newMessage.trim() === "") return;
@@ -329,7 +329,7 @@ export default function Chat() {
                     <input
                       type="text"
                       value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
+                      onChange={(e) => setNewMessage()}
                       placeholder="send message ..."
                       required
                       className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#ffffff] focus:outline-none ml-2 focus:outline-none"
@@ -476,11 +476,11 @@ export default function Chat() {
                 </button>
                  <textarea
                   value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
+                  onChange={(e) => setNewMessage()}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
-                      sendMessage(e);
+                      sendMessage();
                     }
                     if (e.key === "Enter" && e.shiftKey) {
                       e.preventDefault();
