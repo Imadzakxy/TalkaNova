@@ -480,7 +480,7 @@ export default function Chat() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
-                      sendMessage();
+                      sendMessage(e);
                     }
                     if (e.key === "Enter" && e.shiftKey) {
                       e.preventDefault();
