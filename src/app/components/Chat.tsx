@@ -180,7 +180,7 @@ export default function Chat() {
     if(!isPc){
       return (
       <>
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col min-h-screen">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
               <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
