@@ -180,7 +180,7 @@ export default function Chat() {
     if(!isPc){
       return (
       <>
-        <div className="flex flex-col h-screen">
+        <div className="h-screen">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
               <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
@@ -276,7 +276,7 @@ export default function Chat() {
                 </div>
               )}
 
-              <div className="chat w-full h-full flex flex-col bg-transparent">
+              <div className="chat w-full h-[93%] flex flex-col bg-transparent">
                 <div className="msgs flex-1 overflow-y-auto p-2">
                   {messages.map((msg, idx) => {
                     const isMe = msg.id === session.user.id; // check si c'est toi
