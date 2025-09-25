@@ -300,7 +300,7 @@ export default function Chat() {
                         }`}
                       >
                         {msg.message}
-                      </p> <div ref={messagesEndRef} />
+                      </p> 
                     </div>
                   );
                 })}
