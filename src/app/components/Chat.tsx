@@ -484,13 +484,13 @@ export default function Chat() {
                     if (e.key === "Enter" && e.shiftKey) {
                       e.preventDefault();
                       
-                      const cursorPos = e.target.selectionStart;
-                      const value = e.target.value;
+                      const cursorPos = e.currentTarget.selectionStart;
+                      const value = e.currentTarget.value;
                       const newValue = value.slice(0, cursorPos) + "\n" + value.slice(cursorPos);
                       setNewMessage(newValue);
 
                       setTimeout(() => {
-                        e.target.selectionStart = e.target.selectionEnd = cursorPos + 1;
+                        e.currentTarget.selectionStart = e.currentTarget.selectionEnd = cursorPos + 1;
                       }, 0);
                     }
                   }}
