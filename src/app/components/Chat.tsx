@@ -287,8 +287,8 @@ export default function Chat() {
                 </div>
               )}
 
-              <div className="chat h-full w-full flex flex-col bg-transparent">
-                <div className="msgs p-2 flex-1 flex-col overflow-y-auto">
+              <div className="chat flex flex-col bg-transparent">
+                <div className="msgs flex-1 overflow-y-auto p-2">
                   {messages.map((msg, idx) => {
                     const isMe = msg.id === session.user.id; // check si c'est toi
 
