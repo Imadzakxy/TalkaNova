@@ -180,7 +180,7 @@ export default function Chat() {
     if(!isPc){
       return (
       <>
-        <div className="flex flex-col justify-between h-dvh">
+        <div className="flex flex-col h-dvh">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
               <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
@@ -300,11 +300,11 @@ export default function Chat() {
                         }`}
                       >
                         {msg.message}
-                      </p>
+                      </p> <div ref={messagesEndRef} />
                     </div>
                   );
                 })}
-                <div ref={messagesEndRef} />
+                
               </div>
 
               <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
