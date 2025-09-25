@@ -213,28 +213,7 @@ export default function Chat() {
                       # général
                     </p>
                   </div>
-                  <div
-                    className="friend1 w-full h-[10%] border-b-1 border-[#33A1E040] flex items-center"
-                    onClick={() =>
-                      setActiveChat({ id: "friend1", type: "private" })
-                    }
-                  >
-                    <div className="profile w-[16%] h-[70%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain"></div>
-                    <p className="text-[#33A1E0] text-xl p-1 flex justify-center items-center">
-                      Friend1
-                    </p>
-                  </div>
-                  <div
-                    className="friend2 w-full h-[10%] border-b-1 border-[#33A1E040] flex items-center"
-                    onClick={() =>
-                      setActiveChat({ id: "friend2", type: "private" })
-                    }
-                  >
-                    <div className="profile w-[16%] h-[70%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain"></div>
-                    <p className="text-[#33A1E0] text-xl p-1 flex items-center justify-start">
-                      Friend2
-                    </p>
-                  </div>
+                  <div className="chats"></div>
                 </div>
 
                 <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
@@ -286,58 +265,55 @@ export default function Chat() {
                   </h1>
                 </div>
               )}
+              <div className="msgs flex-1 overflow-y-auto p-2">
+                {messages.map((msg, idx) => {
+                  const isMe = msg.id === session.user.id; // check si c'est toi
 
-              <div className="chat flex flex-col bg-transparent">
-                <div className="msgs flex-1 overflow-y-auto p-2">
-                  {messages.map((msg, idx) => {
-                    const isMe = msg.id === session.user.id; // check si c'est toi
+                  return (
+                    <div
+                      key={idx}
+                      className={`flex items-start gap-2 mb-2 ${
+                        isMe ? "flex-row-reverse" : "flex-row"
+                      }`}
+                    >
+                      {/* Avatar */}
+                      <img
+                        src={msg.avatar}
+                        alt="pfp"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
 
-                    return (
-                      <div
-                        key={idx}
-                        className={`flex items-start gap-2 mb-2 ${
-                          isMe ? "flex-row-reverse" : "flex-row"
+                      {/* Message */}
+                      <p
+                        className={`px-3 py-1 rounded-2xl max-w-[60%] text-white justify-start break-words whitespace-pre-wrap ${
+                          isMe ? "bg-blue-600 text-left max-w-[70%]" : "bg-gray-700 text-left max-w-[70%]"
                         }`}
                       >
-                        {/* Avatar */}
-                        <img
-                          src={msg.avatar}
-                          alt="pfp"
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
+                        {msg.message}
+                      </p>
+                    </div>
+                  );
+                })}
+                <div ref={messagesEndRef} />
+              </div>
 
-                        {/* Message */}
-                        <p
-                          className={`px-3 py-1 rounded-2xl max-w-[60%] text-white justify-start break-words whitespace-pre-wrap ${
-                            isMe ? "bg-blue-600 text-left max-w-[70%]" : "bg-gray-700 text-left max-w-[70%]"
-                          }`}
-                        >
-                          {msg.message}
-                        </p>
-                      </div>
-                    );
-                  })}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
-                  <div className="send_bar h-[92%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
-                    <button className="add_file w-[14%] h-[65%] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-3">
-                      <div className="add w-[76%] h-[70%] bg-center bg-contain bg-no-repeat bg-[url('/add.svg')] rounded-[100%]"></div>
-                    </button>
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="send message ..."
-                      required
-                      className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#ffffff] focus:outline-none ml-2 focus:outline-none"
-                    />
-                    <button
-                      onClick={sendMessage}
-                      className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2">
-                    </button>
-                  </div>
+              <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
+                <div className="send_bar h-[92%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
+                  <button className="add_file w-[14%] h-[65%] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-3">
+                    <div className="add w-[76%] h-[70%] bg-center bg-contain bg-no-repeat bg-[url('/add.svg')] rounded-[100%]"></div>
+                  </button>
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="send message ..."
+                    required
+                    className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#ffffff] focus:outline-none ml-2 focus:outline-none"
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2">
+                  </button>
                 </div>
               </div>
             </div>
@@ -383,17 +359,7 @@ export default function Chat() {
                   Name
                 </p>
               </div>
-              <div
-                className="friend2 w-full h-[10%] border-1 border-[#33A1E040] border-t-0 border-r-0 cursor-pointer flex items-center"
-                onClick={() =>
-                  setActiveChat({ id: "friend2", type: "private" })
-                }
-              >
-                <div className="profile w-[20%] h-[80%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
-                <p className="text-[#33A1E0] text-[13px] sm:text-xl lg:text-3xl p-1 flex items-center justify-start">
-                  Name
-                </p>
-              </div>
+              <div className="chats"></div>
             </div>
 
             <div className="parameters w-full h-[10%] border-1 border-[#33A1E040] flex flex-end items-center justify-center ">
