@@ -180,7 +180,7 @@ export default function Chat() {
     if(!isPc){
       return (
       <>
-        <div className="h-screen">
+        <div className="flex flex-col h-screen">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
               <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
@@ -261,7 +261,7 @@ export default function Chat() {
                   <button className="members w-[12%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
                 </div>
               ) : (
-                <div className="bar h-[7%] w-full border-1 border-[#33A1E040] bg-transparent flex flex-row items-center">
+                <div className="bar h-[7%] w-full border-1 border-[#33A1E040] bg-transparent flex flex-row items-center sticky">
                   <div
                     className="back w-[10%] h-[60%] bg-center bg-contain bg-no-repeat bg-[url('/back.svg')] cursor-pointer flex justify-end items-center"
                     onClick={() => setActiveChat(null)}
@@ -275,8 +275,6 @@ export default function Chat() {
                   </h1>
                 </div>
               )}
-
-              <div className="chat w-full h-[93%] flex flex-col bg-transparent">
                 <div className="msgs flex-1 overflow-y-auto p-2">
                   {messages.map((msg, idx) => {
                     const isMe = msg.id === session.user.id; // check si c'est toi
@@ -329,7 +327,6 @@ export default function Chat() {
                   </div>
                 </div>
               </div>
-            </div>
           )}
         </div>
       </>
