@@ -180,7 +180,7 @@ export default function Chat() {
     if(!isPc){
       return (
       <>
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col min-h-dvh">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
               <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
@@ -275,58 +275,58 @@ export default function Chat() {
                   </h1>
                 </div>
               )}
-                <div className="msgs flex-1 overflow-y-auto p-2">
-                  {messages.map((msg, idx) => {
-                    const isMe = msg.id === session.user.id; // check si c'est toi
+              <div className="msgs flex-1 overflow-y-auto p-2">
+                {messages.map((msg, idx) => {
+                  const isMe = msg.id === session.user.id; // check si c'est toi
 
-                    return (
-                      <div
-                        key={idx}
-                        className={`flex items-start gap-2 mb-2 ${
-                          isMe ? "flex-row-reverse" : "flex-row"
+                  return (
+                    <div
+                      key={idx}
+                      className={`flex items-start gap-2 mb-2 ${
+                        isMe ? "flex-row-reverse" : "flex-row"
+                      }`}
+                    >
+                      {/* Avatar */}
+                      <img
+                        src={msg.avatar}
+                        alt="pfp"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+
+                      {/* Message */}
+                      <p
+                        className={`px-3 py-1 rounded-2xl max-w-[60%] text-white justify-start break-words whitespace-pre-wrap ${
+                          isMe ? "bg-blue-600 text-left max-w-[70%]" : "bg-gray-700 text-left max-w-[70%]"
                         }`}
                       >
-                        {/* Avatar */}
-                        <img
-                          src={msg.avatar}
-                          alt="pfp"
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
+                        {msg.message}
+                      </p>
+                    </div>
+                  );
+                })}
+                <div ref={messagesEndRef} />
+              </div>
 
-                        {/* Message */}
-                        <p
-                          className={`px-3 py-1 rounded-2xl max-w-[60%] text-white justify-start break-words whitespace-pre-wrap ${
-                            isMe ? "bg-blue-600 text-left max-w-[70%]" : "bg-gray-700 text-left max-w-[70%]"
-                          }`}
-                        >
-                          {msg.message}
-                        </p>
-                      </div>
-                    );
-                  })}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
-                  <div className="send_bar h-[92%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
-                    <button className="add_file w-[14%] h-[65%] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-3">
-                      <div className="add w-[76%] h-[70%] bg-center bg-contain bg-no-repeat bg-[url('/add.svg')] rounded-[100%]"></div>
-                    </button>
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="send message ..."
-                      required
-                      className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#ffffff] focus:outline-none ml-2 focus:outline-none"
-                    />
-                    <button
-                      onClick={sendMessage}
-                      className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2">
-                    </button>
-                  </div>
+              <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
+                <div className="send_bar h-[92%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
+                  <button className="add_file w-[14%] h-[65%] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-3">
+                    <div className="add w-[76%] h-[70%] bg-center bg-contain bg-no-repeat bg-[url('/add.svg')] rounded-[100%]"></div>
+                  </button>
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="send message ..."
+                    required
+                    className="w-full h-full text-lg flex items-center justify-center border-0 bg-transparent text-[#ffffff] focus:outline-none ml-2 focus:outline-none"
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className="send w-[12%] h-[80%] bg-center bg-contain bg-no-repeat bg-[url('/send.svg')] mr-2">
+                  </button>
                 </div>
               </div>
+            </div>
           )}
         </div>
       </>
