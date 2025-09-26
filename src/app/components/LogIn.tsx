@@ -93,10 +93,10 @@ autoComplete="off"
               <span className="absolute left-0 top-0 w-5 h-5 bg-[url('/check.png')] bg-contain bg-center bg-no-repeat opacity-0 peer-checked:opacity-100 pointer-events-none"></span>
             </label>
 
-            <span className="ml-2 text-[#d0d0d0]">Remember me</span>
+            <span className="ml-2 text-[15px] lg:text-lg text-[#d0d0d0]">Remember me</span>
           </span>
           <Link href="/help">
-            <button className="forgot text-[#33A1E0] cursor-pointer bg-transparent hover:[text-shadow:0_2px_4px_rgba(51,161,224,0.7)]">
+            <button className="forgot text-[#33A1E0] text-[15px] lg:text-lg cursor-pointer bg-transparent hover:[text-shadow:0_2px_4px_rgba(51,161,224,0.7)]">
               Forgot password!
             </button>
           </Link>

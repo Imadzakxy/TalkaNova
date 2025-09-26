@@ -111,6 +111,38 @@ export default function Chat() {
   };
   
   const roomRef = useRef<RealtimeChannel | null>(null);
+  const [userList, setUserList] = useState<Profile[]>([]);
+  const [showMembers, setShowMembers] = useState(false);
+ 
+  useEffect(() => {
+
+    let isMounted = true;
+
+    const fetchProfiles = async () => {
+      const { data, error } = await client
+        .from("profile")
+        .select("id, user_name, pfp_url, email");
+
+      if (!error && data && isMounted) {
+        setUserList(
+          data.map((u: any) => ({
+            id: String(u.id),
+            user_name: u.user_name,
+            pfp_url: u.pfp_url ?? null,
+            email: u.email ? String(u.email).toLowerCase() : "",
+          }))
+        );
+      } else if (error) {
+        console.error("Erreur fetch profiles:", error);
+      }
+    };
+
+    fetchProfiles();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(()=>{
     if(!session?.user){
@@ -136,14 +168,30 @@ export default function Chat() {
 
     roomOne.subscribe(async (status)=>{
       if(status === "SUBSCRIBED"){
-        await roomOne.track({ id:session?.user?.id, }); 
+        await roomOne.track({ 
+          id:session?.user?.id,
+          email: session.user.email?.toLowerCase(),
+        }); 
       } 
     });
+   
+    
+    roomOne.on("presence", { event: "sync" }, () => {
+      const state = roomOne.presenceState() || {};
+      const onlineEmails: string[] = [];
 
-    /*roomOne.on("presence", {event: "sync"}, () => {
-      const state = roomOne.presenceState();
-      setUsersOnline(Object.keys(state));
-    });*/
+      for (const presences of Object.values(state)) {
+        if (Array.isArray(presences)) {
+          presences.forEach((p: any) => {
+            if (p.email) {
+              onlineEmails.push(String(p.email).toLowerCase());
+            }
+          });
+        }
+      }
+      setUsersOnline(onlineEmails);
+    });
+
     
     return () => {
       client.channel("room_one").unsubscribe();
@@ -175,6 +223,10 @@ export default function Chat() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]); 
+
+  const ShowThem = () => {
+    setShowMembers((prev) => !prev);
+  };
 
   if(session){
     if(!isPc){
@@ -334,7 +386,10 @@ export default function Chat() {
     }
     return (
       <>
-        <div className="page h-full w-full grid grid-cols-5 grid-rows-10">
+        <div
+          className={`page h-full w-full grid grid-rows-10 transition-all duration-300 
+            ${showMembers ? "grid-cols-6" : "grid-cols-5"}`}
+        >
           <div className=" search col-start-1 row-start-1 border-1 border-[#33A1E040] flex items-center justify-center">
             <div className="search_bar w-[90%] h-[75%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[#FFFFFF30] font-sans shadow-[0_0_15px_#33A1E0]">
               <div className="loop w-[13%] h-[70%] bg-no-repeat bg-contain bg-center bg-[url('/loop.svg')] ml-3"></div>
@@ -364,19 +419,8 @@ export default function Chat() {
                   setActiveChat({ id: "friend1", type: "private" })
                 }
               >
-                <div className="profile w-[20%] h-[80%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
+                <div className="profile w-4 h-4 sm:w-7 sm:h-7 lg:w-9 lg:h-9 bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
                 <p className="text-[#33A1E0] text-[13px] sm:text-xl lg:text-3xl p-1 flex justify-center items-center">
-                  Name
-                </p>
-              </div>
-              <div
-                className="friend2 w-full h-[10%] border-1 border-[#33A1E040] border-t-0 border-r-0 cursor-pointer flex items-center"
-                onClick={() =>
-                  setActiveChat({ id: "friend2", type: "private" })
-                }
-              >
-                <div className="profile w-[20%] h-[80%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
-                <p className="text-[#33A1E0] text-[13px] sm:text-xl lg:text-3xl p-1 flex items-center justify-start">
                   Name
                 </p>
               </div>
@@ -384,14 +428,14 @@ export default function Chat() {
 
             <div className="parameters w-full h-[10%] border-1 border-[#33A1E040] flex flex-end items-center justify-center ">
               <div 
-                className="profile w-[28%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
+                className="profile w-[15px] h-[15px] sm:w-[30px] sm:h-[30px] lg:w-[43px] lg:h-[37px] bg-center bg-cover bg-no-repeat rounded-full" 
                 style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}
               ></div>
-              <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
-                <p className="name text-[#33A1E0] text-[7px] sm:text-xs lg:text-sm w-full h-[40%]">
+              <div className="infos h-[90%] w-[77%] items-center p-1">
+                <p className="name text-[#33A1E0] text-[7px] sm:text-[11px] lg:text-sm w-full">
                   {profile?.user_name}
                 </p>
-                <p className="email text-[#2678A3] text-[5px] sm:text-[10px] lg:text-xs w-full h-[40%] pt-1">
+                <p className="email text-[#2678A3] text-[5px] sm:text-[7px] lg:text-xs w-full pt-1">
                   {profile?.email}
                 </p>
               </div>
@@ -406,7 +450,11 @@ export default function Chat() {
               <h1 className="h-full flex flex-end justify-center items-center text-2xl sm:text-4xl lg:text-5xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
                 TalkaNova
               </h1>
-              <button className="members w-[5%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
+              <button 
+                onClick={ShowThem}
+                className="members w-7 h-7 sm:w-12 sm:h-12 lg:w-15 lg:h-15 bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"
+              >
+              </button>
             </div>
           ) : (
           <div className="bar col-span-4 col-start-2 row-start-1  border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center">
@@ -422,7 +470,7 @@ export default function Chat() {
 
           <div className="chat  flex flex-col bg-transparent col-span-4 row-span-9 col-start-2 row-start-2">
 
-            <div className="msgs p-2 flex-1 flex-col overflow-y-auto">
+            <div className="msgs p-2 flex-1 overflow-y-auto">
               {messages.map((msg, idx) => {
                 const isMe = msg.id === session.user.id; // check si c'est toi
 
@@ -491,7 +539,39 @@ export default function Chat() {
                 ></button>
               </div>
             </div>
-          </div>
+          </div> 
+          {showMembers && (
+            <div className="members col-start-6 row-start-1 row-span-10 border-l border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
+
+              <p className="text-green-400 font-bold mb-2">En ligne :</p>
+              {userList
+                .filter((user) => usersOnline.includes(user.email))
+                .map((user) => (
+                  <div key={user.id} className="flex items-center gap-2 mb-1">
+                    <img
+                      src={user.pfp_url}
+                      alt={user.user_name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <span className="text-white">{user.user_name}</span>
+                  </div>
+                ))}
+
+              <p className="text-gray-400 font-bold mt-3 mb-2">Hors ligne :</p>
+              {userList
+                .filter((user) => !usersOnline.includes(user.email))
+                .map((user) => (
+                  <div key={user.id} className="flex items-center gap-2 mb-1 opacity-50">
+                    <img
+                      src={user.pfp_url}
+                      alt={user.user_name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <span className="text-white">{user.user_name}</span>
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
       </>
     );
