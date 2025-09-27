@@ -34,14 +34,6 @@ type Profile = {
   pfp_url: string;
 };
 
-setUserList(
-  data.map((u: Profile) => ({
-    id: String(u.id),
-    user_name: u.user_name,
-    pfp_url: u.pfp_url ?? "/profile.svg",
-  }))
-);
-
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
@@ -133,7 +125,7 @@ export default function Chat() {
 
       if (!error && data && isMounted) {
         setUserList(
-          data.map((u: any) => ({
+          data.map((u: Profile) => ({
             id: String(u.id),
             user_name: u.user_name,
             pfp_url: u.pfp_url ?? null,
