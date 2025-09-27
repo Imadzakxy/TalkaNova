@@ -129,6 +129,7 @@ export default function Chat() {
             id: String(u.id),
             user_name: u.user_name,
             pfp_url: u.pfp_url ?? null,
+            email: u.email,
           }))
         );
       } else if (error) {
