@@ -165,14 +165,23 @@ export default function Chat() {
       setMessages((prevMessages)=>[...prevMessages, payload.payload]);
     });
     
+    type PresenceMeta = {
+      presence_ref: string;
+      id?: string;
+      user_name?: string;
+      pfp_url?: string;
+    };
+    
     roomOne.on("presence", { event: "sync" }, () => {
       const state = roomOne.presenceState();
       console.log("[roomOne] presenceState raw:", state);
       
       const metas = Object.values(state)
-        .flat()
-        .map((m) => (m as { id: string }).id);
-      setUsersOnline(metas); 
+        .flat() as PresenceMeta[];
+      const ids = metas
+        .map((m) => m.id)
+        .filter((id): id is string => Boolean(id));
+      setUsersOnline(ids); 
     });
 
     roomOne.subscribe(async (status)=>{
