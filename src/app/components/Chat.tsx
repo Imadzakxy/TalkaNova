@@ -40,7 +40,6 @@ export default function Chat() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [usersOnline, setUsersOnline] = useState([]);
   const router = useRouter();
 
   const [activeChat, setActiveChat] = useState<{
@@ -111,7 +110,8 @@ export default function Chat() {
   };
   
   const roomRef = useRef<RealtimeChannel | null>(null);
-  const [userList, setUserList] = useState<Profile[]>([]);
+  const [userList, setUserList] = useState<Profile[]>([]); 
+  const [usersOnline, setUsersOnline] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
  
   useEffect(() => {
@@ -153,7 +153,7 @@ export default function Chat() {
       config:{
         broadcast: { self: true },
         presence:{
-          key: session?.user?.id,
+          key: session.user.id,
         },
       },
     });
@@ -161,20 +161,23 @@ export default function Chat() {
     roomRef.current = roomOne;
      
     roomOne.on("broadcast", {event:"message"}, (payload) =>{
-      console.log("📩 Message reçu de Supabase:", payload);
       setMessages((prevMessages)=>[...prevMessages, payload.payload]);
+    });
+    
+    roomOne.on("presence", { event: "sync" }, () => {
+      const state = roomOne.presenceState();
+      console.log("[roomOne] presenceState raw:", state);
+      
+      const metas = Object.values(state)
+        .flat()
+        .map((m: any) => m.id);
+      setUsersOnline(metas); 
     });
 
     roomOne.subscribe(async (status)=>{
       if(status === "SUBSCRIBED"){
-        await roomOne.track({ id:session?.user?.id, });
+        roomOne.track({ id:session?.user?.id, });
       } 
-    });
-   
-    
-    roomOne.on("presence", { event: "sync" }, () => {
-      const state = roomOne.presenceState();
-      setUsersOnline(Object.keys(state));
     });
     
     return () => {
@@ -211,9 +214,7 @@ export default function Chat() {
   const ShowThem = () => {
     setShowMembers((prev) => !prev);
   };
-  
-  console.log(usersOnline,userList);
-  
+
   if(session){
     if(!isPc){
       return (
@@ -373,8 +374,7 @@ export default function Chat() {
     return (
       <>
         <div
-          className={`page h-full w-full grid grid-rows-10 transition-all duration-300 
-            ${showMembers ? "grid-cols-6" : "grid-cols-5"}`}
+          className="page h-full w-full grid grid-rows-10 transition-all duration-300 grid-cols-5"
         >
           <div className=" search col-start-1 row-start-1 border-1 border-[#33A1E040] flex items-center justify-center">
             <div className="search_bar w-[90%] h-[75%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[#FFFFFF30] font-sans shadow-[0_0_15px_#33A1E0]">
@@ -432,7 +432,10 @@ export default function Chat() {
             </div>
           </div>
           {activeChat?.type === "general" ? (
-            <div className="bar col-span-4 col-start-2 row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center justify-between">
+            <div 
+            className={`bar row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center justify-between 
+              ${showMembers ? "col-span-4 col-start-2" : "col-span-5 col-start-2"}`}
+            >
               <h1 className="h-full flex flex-end justify-center items-center text-2xl sm:text-4xl lg:text-5xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
                 TalkaNova
               </h1>
@@ -443,7 +446,8 @@ export default function Chat() {
               </button>
             </div>
           ) : (
-          <div className="bar col-span-4 col-start-2 row-start-1  border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center">
+          <div className={`bar row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center
+      ${showMembers ? "col-span-3 col-start-2" : "col-span-4 col-start-2"}`}>
             <div className="profile w-[6%] h-[70%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain"></div>
             <p className="text-[#33A1E0] text-2xl p-1 flex items-center justify-start">
               {activeChat?.id}
@@ -454,9 +458,11 @@ export default function Chat() {
           </div>
           )}
 
-          <div className="chat  flex flex-col bg-transparent col-span-4 row-span-9 col-start-2 row-start-2">
+          <div className={`chat flex flex-col bg-transparent row-span-9 row-start-2
+                ${showMembers ? "col-span-4 col-start-2" : "col-span-5 col-start-2"}`}
+          >
 
-            <div className="msgs p-2 flex-1 overflow-y-auto">
+            <div className="msgs p-3 flex-1 overflow-y-auto">
               {messages.map((msg, idx) => {
                 const isMe = msg.id === session.user.id; // check si c'est toi
 
@@ -528,11 +534,11 @@ export default function Chat() {
           </div> 
           {showMembers && (
             <div className="members col-start-6 row-start-1 row-span-10 border-l border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
-              <p className="text-green-400 font-bold mb-2">En ligne :</p>
+              <p className="text-green-400 font-bold mb-1">En ligne :</p>
               {userList
                 .filter((user) => usersOnline.includes(user.id))
                 .map((user) => (
-                  <div key={user.id} className="flex items-center gap-2 mb-1">
+                  <div key={user.id} className="w-full h-10 flex items-center gap-3">
                     <img
                       src={user.pfp_url}
                       alt={user.user_name}
@@ -542,11 +548,11 @@ export default function Chat() {
                   </div>
                 ))}
 
-              <p className="text-gray-400 font-bold mt-3 mb-2">Hors ligne :</p>
+              <p className="text-gray-400 font-bold mt-2 mb-1">Hors ligne :</p>
               {userList
                 .filter((user) => !usersOnline.includes(user.id))
                 .map((user) => (
-                  <div key={user.id} className="flex items-center gap-2 mb-1 opacity-50">
+                  <div key={user.id} className="fw-full h-8 flex items-center gap-2 opacity-50">
                     <img
                       src={user.pfp_url}
                       alt={user.user_name}
