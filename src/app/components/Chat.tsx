@@ -34,6 +34,14 @@ type Profile = {
   pfp_url: string;
 };
 
+setUserList(
+  data.map((u: Profile) => ({
+    id: String(u.id),
+    user_name: u.user_name,
+    pfp_url: u.pfp_url ?? "/profile.svg",
+  }))
+);
+
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
@@ -170,7 +178,7 @@ export default function Chat() {
       
       const metas = Object.values(state)
         .flat()
-        .map((m: any) => m.id);
+        .map((m) => (m as { id: string }).id);
       setUsersOnline(metas); 
     });
 
@@ -533,32 +541,32 @@ export default function Chat() {
             </div>
           </div> 
           {showMembers && (
-            <div className="members col-start-6 row-start-1 row-span-10 border-l border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
-              <p className="text-green-400 font-bold mb-1">En ligne :</p>
+            <div className="members col-start-6 row-start-1 row-span-10 border-1 border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
+              <p className="text-green-400 font-bold">En ligne :</p>
               {userList
                 .filter((user) => usersOnline.includes(user.id))
                 .map((user) => (
-                  <div key={user.id} className="w-full h-10 flex items-center gap-3">
+                  <div key={user.id} className="w-full h-11 flex items-center gap-3">
                     <img
                       src={user.pfp_url}
                       alt={user.user_name}
                       className="w-8 h-8 rounded-full object-cover"
                     />
-                    <span className="text-white">{user.user_name}</span>
+                    <span className="text-white pt-2">{user.user_name}</span>
                   </div>
                 ))}
 
-              <p className="text-gray-400 font-bold mt-2 mb-1">Hors ligne :</p>
+              <p className="text-gray-400 font-bold mt-2">Hors ligne :</p>
               {userList
                 .filter((user) => !usersOnline.includes(user.id))
                 .map((user) => (
-                  <div key={user.id} className="fw-full h-8 flex items-center gap-2 opacity-50">
+                  <div key={user.id} className="fw-full h-9 flex items-center gap-2 opacity-50">
                     <img
                       src={user.pfp_url}
                       alt={user.user_name}
                       className="w-7 h-7 rounded-full object-cover"
                     />
-                    <span className="text-white">{user.user_name}</span>
+                    <span className="text-white pt-2">{user.user_name}</span>
                   </div>
                 ))}
             </div>
