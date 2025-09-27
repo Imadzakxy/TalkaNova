@@ -129,7 +129,6 @@ export default function Chat() {
             id: String(u.id),
             user_name: u.user_name,
             pfp_url: u.pfp_url ?? null,
-            email: u.email ? String(u.email).toLowerCase() : "",
           }))
         );
       } else if (error) {
@@ -159,8 +158,8 @@ export default function Chat() {
       },
     });
 
-    roomRef.current = roomOne; 
-    
+    roomRef.current = roomOne;
+     
     roomOne.on("broadcast", {event:"message"}, (payload) =>{
       console.log("📩 Message reçu de Supabase:", payload);
       setMessages((prevMessages)=>[...prevMessages, payload.payload]);
@@ -168,30 +167,15 @@ export default function Chat() {
 
     roomOne.subscribe(async (status)=>{
       if(status === "SUBSCRIBED"){
-        await roomOne.track({ 
-          id:session?.user?.id,
-          email: session.user.email?.toLowerCase(),
-        }); 
+        await roomOne.track({ id:session?.user?.id, });
       } 
     });
    
     
     roomOne.on("presence", { event: "sync" }, () => {
-      const state = roomOne.presenceState() || {};
-      const onlineEmails: string[] = [];
-
-      for (const presences of Object.values(state)) {
-        if (Array.isArray(presences)) {
-          presences.forEach((p: any) => {
-            if (p.email) {
-              onlineEmails.push(String(p.email).toLowerCase());
-            }
-          });
-        }
-      }
-      setUsersOnline(onlineEmails);
+      const state = roomOne.presenceState();
+      setUsersOnline(Object.keys(state));
     });
-
     
     return () => {
       client.channel("room_one").unsubscribe();
@@ -227,7 +211,9 @@ export default function Chat() {
   const ShowThem = () => {
     setShowMembers((prev) => !prev);
   };
-
+  
+  console.log(usersOnline,userList);
+  
   if(session){
     if(!isPc){
       return (
@@ -542,10 +528,9 @@ export default function Chat() {
           </div> 
           {showMembers && (
             <div className="members col-start-6 row-start-1 row-span-10 border-l border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
-
               <p className="text-green-400 font-bold mb-2">En ligne :</p>
               {userList
-                .filter((user) => usersOnline.includes(user.email))
+                .filter((user) => usersOnline.includes(user.id))
                 .map((user) => (
                   <div key={user.id} className="flex items-center gap-2 mb-1">
                     <img
@@ -559,13 +544,13 @@ export default function Chat() {
 
               <p className="text-gray-400 font-bold mt-3 mb-2">Hors ligne :</p>
               {userList
-                .filter((user) => !usersOnline.includes(user.email))
+                .filter((user) => !usersOnline.includes(user.id))
                 .map((user) => (
                   <div key={user.id} className="flex items-center gap-2 mb-1 opacity-50">
                     <img
                       src={user.pfp_url}
                       alt={user.user_name}
-                      className="w-8 h-8 rounded-full object-cover"
+                      className="w-7 h-7 rounded-full object-cover"
                     />
                     <span className="text-white">{user.user_name}</span>
                   </div>
