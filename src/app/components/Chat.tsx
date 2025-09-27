@@ -111,7 +111,7 @@ export default function Chat() {
   
   const roomRef = useRef<RealtimeChannel | null>(null);
   const [userList, setUserList] = useState<Profile[]>([]); 
-  const [usersOnline, setUsersOnline] = useState([]);
+  const [usersOnline, setUsersOnline] = useState<string[]>([]);
   const [showMembers, setShowMembers] = useState(false);
  
   useEffect(() => {
