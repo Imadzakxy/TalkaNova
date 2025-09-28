@@ -232,12 +232,11 @@ export default function Chat() {
         <div className="flex flex-col h-dvh">
           {activeChat === null && (
             <div className="contact w-full h-full flex flex-col">
-
               <div className="bar h-[7%] w-full z-10 bg-transparent flex flex-row items-center justify-between">
                 <h1 className="h-full flex flex-end justify-center items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
                   TalkaNova
                 </h1>
-                <button className="profile w-[12%] h-[75%] bg-no-repeat bg-[url('/TN.svg')] bg-center bg-contain flex justify-end items-center mr-2"></button>
+                <button className="profile w-[12%] h-[75%] bg-no-repeat bg-[url('/profile.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
               </div>
 
               <div className=" search h-[8%] w-full flex items-center justify-center">
@@ -251,54 +250,80 @@ export default function Chat() {
                 </div>
               </div>
 
-              <div className="all_chats flex-1 overflow-y-auto border-1 border-[#33A1E040] bg-transparent">
-                <div 
-                  className="general w-full h-[10%] border-b-1 border-[#33A1E040] flex items-center cursor-pointer "
-                  onClick={() =>
+              <div className="massage h-full w-full flex flex-col font-sans border-1 border-[#33A1E040] bg-transparent">
+                <div className="all_chats h-full w-full flex flex-col flex-grow">
+                  <div
+                    className="general w-full h-[10%] border-b-1 border-[#33A1E040] flex items-center "
+                    onClick={() =>
                       setActiveChat({ id: "general", type: "general" })
-                  }
-                >
-                  <p className="text-[#33A1E0] text-xl font-bold p-1 ml-2">
-                    # général
-                  </p>
+                    }
+                  >
+                    <p className="text-[#33A1E0] text-xl font-bold p-1 ml-2">
+                      # général
+                    </p>
+                  </div>
+                  <div
+                    className="friend1 w-full h-[10%] border-b-1 border-[#33A1E040] flex items-center"
+                    onClick={() =>
+                      setActiveChat({ id: "friend1", type: "private" })
+                    }
+                  >
+                    <div className="profile w-[16%] h-[70%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain"></div>
+                    <p className="text-[#33A1E0] text-xl p-1 flex justify-center items-center">
+                      Friend1
+                    </p>
+                  </div> 
                 </div>
-              </div>
-              
-              <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
-                <div className="profile w-[20%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
-                  style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}></div>
-                  
-                <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
-                  <p className="name text-[#33A1E0] text-sm w-full h-[40%]">
-                    {profile?.user_name}
-                  </p>
-                  <p className="email text-[#2678A3] text-xs w-full h-[40%] pt-1">
-                    {profile?.email}
-                  </p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="prameter w-[25%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/parametre.svg')] cursor-pointer flex justify-end items-center mr-2"
-                ></button>
-              </div>
 
-            </div>
+                <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
+                  <div className="profile w-[20%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
+                    style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}></div>
+                    
+                  <div className="infos h-[90%] w-[80%] flex flex-end flex-col p-1">
+                    <p className="name text-[#33A1E0] text-sm w-full h-[40%]">
+                      {profile?.user_name}
+                    </p>
+                    <p className="email text-[#2678A3] text-xs w-full h-[40%] pt-1">
+                      {profile?.email}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="prameter w-[25%] h-[75%] bg-center bg-contain bg-no-repeat bg-[url('/parametre.svg')] cursor-pointer flex justify-end items-center mr-2"
+                  ></button>
+                </div>
+              </div>
+           </div>
           )}
 
           {activeChat !== null && (
             <div className="chat w-full h-full flex flex-col">
-                
-              <div className="bar h-[7%] w-full border-1 border-[#33A1E040] bg-transparent flex flex-row items-center">
-                <div
-                  className="back w-[10%] h-[60%] bg-center bg-contain bg-no-repeat bg-[url('/back.svg')] cursor-pointer flex justify-end items-center"
-                  onClick={() => setActiveChat(null)}
-                ></div>
-                <h1 className="h-full flex flex-end items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
-                  TalkaNova
-                </h1>
-                <button className="members w-[12%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
-              </div>
-
+              {activeChat.type === "general" ? (
+                <div className="bar h-[7%] w-full border-1 border-[#33A1E040] bg-transparent flex flex-row items-center">
+                  <div
+                    className="back w-[10%] h-[60%] bg-center bg-contain bg-no-repeat bg-[url('/back.svg')] cursor-pointer flex justify-end items-center"
+                    onClick={() => setActiveChat(null)}
+                  ></div>
+                  <h1 className="h-full flex flex-end items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
+                    TalkaNova
+                  </h1>
+                  <button className="members w-[12%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
+                </div>
+              ) : (
+                <div className="bar h-[7%] w-full border-1 border-[#33A1E040] bg-transparent flex flex-row items-center sticky">
+                  <div
+                    className="back w-[10%] h-[60%] bg-center bg-contain bg-no-repeat bg-[url('/back.svg')] cursor-pointer flex justify-end items-center"
+                    onClick={() => setActiveChat(null)}
+                  ></div>
+                  <div className="profile w-[12%] h-[70%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain"></div>
+                  <p className="text-[#33A1E0] text-xl p-1 flex items-center justify-start">
+                    {activeChat.id}
+                  </p>
+                  <h1 className="h-full flex flex-end justify-end items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
+                    TalkaNova
+                  </h1>
+                </div>
+              )}
               <div className="msgs flex-1 overflow-y-auto p-2">
                 {messages.map((msg, idx) => {
                   const isMe = msg.id === session.user.id; // check si c'est toi
@@ -331,7 +356,7 @@ export default function Chat() {
                 
               </div>
 
-              <div className="send_part w-full h-[10%]  flex items-center justify-center font-sans">
+              <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
                 <div className="send_bar h-[92%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0]">
                   <button className="add_file w-[14%] h-[65%] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center ml-3">
                     <div className="add w-[76%] h-[70%] bg-center bg-contain bg-no-repeat bg-[url('/add.svg')] rounded-[100%]"></div>
@@ -358,8 +383,9 @@ export default function Chat() {
     }
     return (
       <>
-        <div className="page h-full w-full grid grid-rows-10 transition-all duration-300 grid-cols-5">
-          
+        <div
+          className="page h-full w-full grid grid-rows-10 transition-all duration-300 grid-cols-5"
+        >
           <div className=" search col-start-1 row-start-1 border-1 border-[#33A1E040] flex items-center justify-center">
             <div className="search_bar w-[90%] h-[75%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[#FFFFFF30] font-sans shadow-[0_0_15px_#33A1E0]">
               <div className="loop w-[13%] h-[70%] bg-no-repeat bg-contain bg-center bg-[url('/loop.svg')] ml-3"></div>
@@ -372,16 +398,26 @@ export default function Chat() {
           </div>
 
           <div className="massage flex flex-col font-sans border-1 border-[#33A1E040] border-t-0 bg-transparent row-span-9 col-start-1 row-start-2">
-            
-            <div className="all_chats flex-1 overflow-y-autot">
+            <div className="all_chats h-full w-full flex flex-col flex-grow">
               <div
-                className="general w-full h-[10%] border-b-1 border-[#33A1E040] cursor-pointer flex items-center "
+                className="general w-full h-[10%] border-1 border-[#33A1E040] border-t-0 border-r-0 cursor-pointer flex items-center "
                 onClick={() =>
                   setActiveChat({ id: "general", type: "general" })
                 }
               >
                 <p className="text-[#33A1E0] text-[11px] sm:text-xl lg:text-3xl font-bold p-1 ml-2">
                   # général
+                </p>
+              </div>
+              <div
+                className="friend1 w-full h-[10%] border-b-1 border-[#33A1E040] cursor-pointer flex items-center"
+                onClick={() =>
+                  setActiveChat({ id: "friend1", type: "private" })
+                }
+              >
+                <div className="profile w-4 h-4 sm:w-7 sm:h-7 lg:w-9 lg:h-9 bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain ml-1"></div>
+                <p className="text-[#33A1E0] text-[13px] sm:text-xl lg:text-3xl p-1 flex justify-center items-center">
+                  Name
                 </p>
               </div>
             </div>
@@ -405,20 +441,32 @@ export default function Chat() {
               ></button>
             </div>
           </div>
-            
-          <div 
-          className={`bar row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center justify-between 
-            ${showMembers ? "col-span-4 col-start-2" : "col-span-5 col-start-2"}`}
-          >
-            <h1 className="h-full flex flex-end justify-center items-center text-2xl sm:text-4xl lg:text-5xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
+          {activeChat?.type === "general" ? (
+            <div 
+            className={`bar row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center justify-between 
+              ${showMembers ? "col-span-4 col-start-2" : "col-span-5 col-start-2"}`}
+            >
+              <h1 className="h-full flex flex-end justify-center items-center text-2xl sm:text-4xl lg:text-5xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] ml-2">
+                TalkaNova
+              </h1>
+              <button 
+                onClick={ShowThem}
+                className="members w-7 h-7 sm:w-12 sm:h-12 lg:w-15 lg:h-15 bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"
+              >
+              </button>
+            </div>
+          ) : (
+          <div className={`bar row-start-1 border-1 border-[#33A1E040] border-l-0 bg-transparent flex flex-row items-center
+      ${showMembers ? "col-span-3 col-start-2" : "col-span-4 col-start-2"}`}>
+            <div className="profile w-[6%] h-[70%] bg-center bg-no-repeat bg-[url('/profile.svg')] bg-contain"></div>
+            <p className="text-[#33A1E0] text-2xl p-1 flex items-center justify-start">
+              {activeChat?.id}
+            </p>
+            <h1 className="h-full flex flex-end justify-end items-center text-xl sm:text-4xl lg:text-5xl  font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
               TalkaNova
             </h1>
-            <button 
-              onClick={ShowThem}
-              className="members w-7 h-7 sm:w-12 sm:h-12 lg:w-15 lg:h-15 bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"
-            >
-            </button>
           </div>
+          )}
 
           <div className={`chat flex flex-col bg-transparent row-span-9 row-start-2
                 ${showMembers ? "col-span-4 col-start-2" : "col-span-5 col-start-2"}`}
@@ -456,8 +504,8 @@ export default function Chat() {
               <div ref={messagesEndRef} />
             </div>
             
-            <div className="send_part w-full h-[10%]  flex items-center justify-center font-sans">
-              <div className="send_bar h-[90%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0] p-2">
+            <div className="send_part w-full h-[10%] flex items-center justify-center font-sans">
+              <div className="send_bar h-[94%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0] p-2">
                 <button className="add_file w-[15px] h-[15px] sm:w-[25px] sm:h-[25px] lg:w-[36px] lg:h-[35px] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center">
                   <div className="add w-[75%] h-[70%] bg-contain bg-center bg-no-repeat bg-[url('/add.svg')]"></div>
                 </button>
