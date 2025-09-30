@@ -145,63 +145,65 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-  if (!session?.user || !activeChat?.id) {
-    setUsersOnline([]);
-    return;
-  }
-
-  // cleanup ancienne room si on change
-  if (roomRef.current) {
-    client.removeChannel(roomRef.current);
-    roomRef.current = null;
-  }
-
-  // rejoindre la room choisie
-  const channel = client.channel(activeChat.id, {
-    config: {
-      broadcast: { self: true },
-      presence: { key: session.user.id },
-    },
-  });
-
-  roomRef.current = channel;
-
-  // écouter les messages
-  channel.on("broadcast", { event: "message" }, (payload) => {
-    setMessages((prev) => [...prev, payload.payload]);
-  });
-
-  // gérer présence
-  type PresenceMeta = {
-    presence_ref: string;
-    id?: string;
-    user_name?: string;
-    pfp_url?: string;
-  };
-
-  channel.on("presence", { event: "sync" }, () => {
-    const state = channel.presenceState();
-    const metas = Object.values(state).flat() as PresenceMeta[];
-    const ids = metas.map((m) => m.id).filter((id): id is string => Boolean(id));
-    setUsersOnline(ids);
-  });
-
-  // subscribe
-  channel.subscribe((status) => {
-    if (status === "SUBSCRIBED") {
-      channel.track({
-        id: session.user.id,
-        user_name: profile?.user_name,
-        pfp_url: profile?.pfp_url,
-      });
+    if (!session?.user || !activeChat?.id) {
+      setUsersOnline([]);
+      return;
     }
-  });
+    
+    setMessages([]);
 
-  // cleanup quand on change de room
-  return () => {
-    client.removeChannel(channel);
-  };
-}, [session, activeChat?.id]);
+    // cleanup ancienne room si on change
+    if (roomRef.current) {
+      client.removeChannel(roomRef.current);
+      roomRef.current = null;
+    }
+
+    // rejoindre la room choisie
+    const channel = client.channel(activeChat.id, {
+      config: {
+        broadcast: { self: true },
+        presence: { key: session.user.id },
+      },
+    });
+
+    roomRef.current = channel;
+
+    // écouter les messages
+    channel.on("broadcast", { event: "message" }, (payload) => {
+      setMessages((prev) => [...prev, payload.payload]);
+    });
+
+    // gérer présence
+    type PresenceMeta = {
+      presence_ref: string;
+      id?: string;
+      user_name?: string;
+      pfp_url?: string;
+    };
+
+    channel.on("presence", { event: "sync" }, () => {
+      const state = channel.presenceState();
+      const metas = Object.values(state).flat() as PresenceMeta[];
+      const ids = metas.map((m) => m.id).filter((id): id is string => Boolean(id));
+      setUsersOnline(ids);
+    });
+
+    // subscribe
+    channel.subscribe((status) => {
+      if (status === "SUBSCRIBED") {
+        channel.track({
+          id: session.user.id,
+          user_name: profile?.user_name,
+          pfp_url: profile?.pfp_url,
+        });
+      }
+    });
+
+    // cleanup quand on change de room
+    return () => {
+      client.removeChannel(channel);
+    };
+  }, [session, activeChat?.id]);
 
   const sendMessage = async ()=>{
     if (!roomRef.current) return;
@@ -458,7 +460,8 @@ export default function Chat() {
               {rooms.map((room) => (
                 <div
                   key={room.code}
-                  className="room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center"
+                  className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
+                    ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
                   onClick={() => joinRoom(room)}
                 >
                   <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
