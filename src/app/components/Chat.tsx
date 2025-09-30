@@ -282,17 +282,42 @@ export default function Chat() {
                 </div>
               </div>
 
-              <div className="all_chats flex-1 overflow-y-auto border-1 border-[#33A1E040] bg-transparent">
-                <div 
-                  className="general w-full h-[10%] border-b-1 border-[#33A1E040] flex items-center cursor-pointer "
-                  onClick={() =>
-                      setActiveChat({ id: "general", type: "general" })
-                  }
+              <div className="all_chats relative flex-1 overflow-y-autot">
+                {rooms.map((room) => (
+                  <div
+                    key={room.code}
+                    className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
+                      ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
+                    onClick={() => joinRoom(room)}
+                  >
+                    <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
+                      # {room.name}
+                    </p>
+                  </div>
+                ))} 
+              </div>
+              
+              <div className="creat_chat p-1 border-t-1 border-[#33A1E040] flex flex-col justify-center items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Nom de la room"
+                  value={newRoomName}
+                  onChange={(e) => setNewRoomName(e.target.value)}
+                  className="name h-[30%] w-[90%] p-1 text-sm rounded bg-[#154D71] text-white outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder="Code (ex: room123)"
+                  value={newRoomCode}
+                  onChange={(e) => setNewRoomCode(e.target.value)}
+                  className="code h-[30%] w-[90%] p-1 text-sm rounded bg-[#154D71] text-white outline-none"
+                />
+                <button
+                  onClick={createRoom}
+                  className="h-[30%] w-[90%] bg-[#33A1E0] text-white py-1 px-2 rounded hover:bg-[#1e7bbf] text-sm flex justify-center items-center"
                 >
-                  <p className="text-[#33A1E0] text-xl font-bold p-1 ml-2">
-                    # général
-                  </p>
-                </div>
+                  ➕
+                </button>
               </div>
               
               <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
@@ -604,7 +629,7 @@ export default function Chat() {
             </div> 
           {showMembers && (
             <div className="members col-start-6 row-start-1 row-span-10 border-1 border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
-              <p className="text-green-400 font-bold">En ligne :</p>
+              <p className="text-green-400 font-bold">in room :</p>
               {userList
                 .filter((user) => usersOnline.includes(user.id))
                 .map((user) => (
@@ -618,7 +643,7 @@ export default function Chat() {
                   </div>
                 ))}
 
-              <p className="text-gray-400 font-bold mt-2">Hors ligne :</p>
+              <p className="text-gray-400 font-bold mt-2">out of room :</p>
               {userList
                 .filter((user) => !usersOnline.includes(user.id))
                 .map((user) => (
