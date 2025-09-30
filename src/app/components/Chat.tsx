@@ -287,7 +287,7 @@ export default function Chat() {
               </div>
 
               <div className="all_chats border-1 border-[#33A1E040] flex-1 overflow-y-autot">
-                {rooms.map((room) => (
+                {rooms.map((room: Room) => (
                   <div
                     key={room.code}
                     className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
@@ -486,7 +486,7 @@ export default function Chat() {
           <div className="massage flex flex-col font-sans border-1 border-[#33A1E040] border-t-0 bg-transparent row-span-9 col-start-1 row-start-2">
             
             <div className="all_chats relative flex-1 overflow-y-autot">
-              {rooms.map((room) => (
+              {rooms.map((room: Room) => (
                 <div
                   key={room.code}
                   className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
