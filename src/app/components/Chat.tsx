@@ -34,17 +34,6 @@ type Profile = {
   pfp_url: string;
 };
 
-type Room = {
-  name: string;
-  code: string;
-};
-
-type Chat = {
-  id: string;
-  type: string;
-  name: string;
-};
-
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
@@ -244,11 +233,10 @@ export default function Chat() {
     setShowMembers((prev) => !prev);
   };
 
-  const [rooms, setRooms] = useState<Room[]>([
+  const [rooms, setRooms] = useState<{ name: string; code: string }[]>([
     { name: "Général", code: "room_one" }, // room par défaut
   ]);
 
-  const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomCode, setNewRoomCode] = useState("");
 
@@ -264,7 +252,7 @@ export default function Chat() {
     setNewRoomCode("");
   };
 
-  const joinRoom = (room: Room) => {
+  const joinRoom = (room: { name: string; code: string }) => {
     setActiveChat({ id: room.code, type: "private", name: room.name });
   };
 
@@ -299,7 +287,7 @@ export default function Chat() {
                   <div
                     key={room.code}
                     className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                      ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
+                      ${activeChat?.name === room.name ? "bg-[#154D7120]" : ""}`}
                     onClick={() => joinRoom(room)}
                   >
                     <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
@@ -498,7 +486,7 @@ export default function Chat() {
                 <div
                   key={room.code}
                   className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                    ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
+                    ${activeChat?.name === room.name ? "bg-[#154D7120]" : ""}`}
                   onClick={() => joinRoom(room)}
                 >
                   <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
