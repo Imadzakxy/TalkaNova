@@ -144,58 +144,64 @@ export default function Chat() {
     };
   }, []);
 
-  useEffect(()=>{
-    if(!session?.user){
-      setUsersOnline([]);
-      return;
+  useEffect(() => {
+  if (!session?.user || !activeChat?.id) {
+    setUsersOnline([]);
+    return;
+  }
+
+  // cleanup ancienne room si on change
+  if (roomRef.current) {
+    client.removeChannel(roomRef.current);
+    roomRef.current = null;
+  }
+
+  // rejoindre la room choisie
+  const channel = client.channel(activeChat.id, {
+    config: {
+      broadcast: { self: true },
+      presence: { key: session.user.id },
+    },
+  });
+
+  roomRef.current = channel;
+
+  // écouter les messages
+  channel.on("broadcast", { event: "message" }, (payload) => {
+    setMessages((prev) => [...prev, payload.payload]);
+  });
+
+  // gérer présence
+  type PresenceMeta = {
+    presence_ref: string;
+    id?: string;
+    user_name?: string;
+    pfp_url?: string;
+  };
+
+  channel.on("presence", { event: "sync" }, () => {
+    const state = channel.presenceState();
+    const metas = Object.values(state).flat() as PresenceMeta[];
+    const ids = metas.map((m) => m.id).filter((id): id is string => Boolean(id));
+    setUsersOnline(ids);
+  });
+
+  // subscribe
+  channel.subscribe((status) => {
+    if (status === "SUBSCRIBED") {
+      channel.track({
+        id: session.user.id,
+        user_name: profile?.user_name,
+        pfp_url: profile?.pfp_url,
+      });
     }
+  });
 
-    const roomOne = client.channel("room_one", {
-      config:{
-        broadcast: { self: true },
-        presence:{
-          key: session.user.id,
-        },
-      },
-    });
-
-    roomRef.current = roomOne;
-     
-    roomOne.on("broadcast", {event:"message"}, (payload) =>{
-      setMessages((prevMessages)=>[...prevMessages, payload.payload]);
-    });
-    
-    type PresenceMeta = {
-      presence_ref: string;
-      id?: string;
-      user_name?: string;
-      pfp_url?: string;
-    };
-    
-    roomOne.on("presence", { event: "sync" }, () => {
-      const state = roomOne.presenceState();
-      console.log("[roomOne] presenceState raw:", state);
-      
-      const metas = Object.values(state)
-        .flat() as PresenceMeta[];
-      const ids = metas
-        .map((m) => m.id)
-        .filter((id): id is string => Boolean(id));
-      setUsersOnline(ids); 
-    });
-
-    roomOne.subscribe(async (status)=>{
-      if(status === "SUBSCRIBED"){
-        roomOne.track({ id:session?.user?.id, });
-      } 
-    });
-    
-    return () => {
-      client.channel("room_one").unsubscribe();
-      client.removeChannel(roomOne);
-      roomRef.current = null;
-    };
-  },[session]);
+  // cleanup quand on change de room
+  return () => {
+    client.removeChannel(channel);
+  };
+}, [session, activeChat?.id]);
 
   const sendMessage = async ()=>{
     if (!roomRef.current) return;
@@ -223,6 +229,30 @@ export default function Chat() {
 
   const ShowThem = () => {
     setShowMembers((prev) => !prev);
+  };
+
+  const [rooms, setRooms] = useState<{ name: string; code: string }[]>([
+    { name: "Général", code: "room_one" }, // room par défaut
+  ]);
+
+  const [newRoomName, setNewRoomName] = useState("");
+  const [newRoomCode, setNewRoomCode] = useState("");
+
+  const createRoom = () => {
+    if (!newRoomName.trim() || !newRoomCode.trim()) return;
+
+    setRooms((prev) => [
+      ...prev,
+      { name: newRoomName.trim(), code: newRoomCode.trim() },
+    ]);
+
+    setNewRoomName("");
+    setNewRoomCode("");
+  };
+
+  const joinRoom = (room: { name: string; code: string }) => {
+    setActiveChat({ id: room.code, type: "private", name: room.name });
+    window.location.reload();
   };
 
   if(session){
@@ -425,17 +455,41 @@ export default function Chat() {
 
           <div className="massage flex flex-col font-sans border-1 border-[#33A1E040] border-t-0 bg-transparent row-span-9 col-start-1 row-start-2">
             
-            <div className="all_chats flex-1 overflow-y-autot">
-              <div
-                className="general w-full h-[10%] border-b-1 border-[#33A1E040] cursor-pointer flex items-center "
-                onClick={() =>
-                  setActiveChat({ id: "general", type: "general" })
-                }
+            <div className="all_chats relative flex-1 overflow-y-autot">
+              {rooms.map((room) => (
+                <div
+                  key={room.code}
+                  className="room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center"
+                  onClick={() => joinRoom(room)}
+                >
+                  <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
+                    # {room.name}
+                  </p>
+                </div>
+              ))} 
+            </div>
+            
+            <div className="creat_chat p-1 border-t-1 border-[#33A1E040] flex flex-col justify-center items-center gap-2">
+              <input
+                type="text"
+                placeholder="Nom de la room"
+                value={newRoomName}
+                onChange={(e) => setNewRoomName(e.target.value)}
+                className="p-1 text-sm rounded bg-[#154D71] text-white outline-none"
+              />
+              <input
+                type="text"
+                placeholder="Code (ex: room123)"
+                value={newRoomCode}
+                onChange={(e) => setNewRoomCode(e.target.value)}
+                className="p-1 text-sm rounded bg-[#154D71] text-white outline-none"
+              />
+              <button
+                onClick={createRoom}
+                className="h-[30%] w-[90%] bg-[#33A1E0] text-white py-1 px-2 rounded hover:bg-[#1e7bbf] text-sm flex justify-center items-center"
               >
-                <p className="text-[#33A1E0] text-[11px] sm:text-xl lg:text-3xl font-bold p-1 ml-2">
-                  # général
-                </p>
-              </div>
+                ➕
+              </button>
             </div>
 
             <div className="parameters w-full h-[10%] border-1 border-[#33A1E040] flex flex-end items-center justify-center ">
@@ -510,10 +564,10 @@ export default function Chat() {
             
             <div className="send_part w-full h-[10%]  flex items-center justify-center font-sans">
               <div className="send_bar h-[90%] w-[99%] flex items-center justify-center border-1 border-[rgba(255,255,255,0.3)] rounded-[60px] bg-[rgba(255,255,255,0.06)] shadow-[0_0_15px_#33A1E0] p-2">
-                <button className="add_file w-[15px] h-[15px] sm:w-[25px] sm:h-[25px] lg:w-[36px] lg:h-[35px] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center">
+                <button className="add_file py-1 w-[15px] h-[15px] sm:w-[25px] sm:h-[25px] lg:w-[36px] lg:h-[35px] bg-[#33A1E0] cursor-pointer border-0 rounded-[100%] flex justify-center items-center">
                   <div className="add w-[75%] h-[70%] bg-contain bg-center bg-no-repeat bg-[url('/add.svg')]"></div>
                 </button>
-                 <textarea
+                <textarea
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={(e) => {
@@ -536,7 +590,7 @@ export default function Chat() {
                   }}
                   placeholder="Send message ..."
                   required
-                  className="w-full h-full text-[13px] sm:text-lg lg:text-2xl flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-1 sm:ml-2 lg:ml-3 focus:outline-none"
+                  className="w-full h-full text-[13px] sm:text-lg lg:text-2xl flex items-center justify-center border-0 bg-transparent text-[#FFFFFF] focus:outline-none ml-1 sm:ml-1 lg:ml-3 focus:outline-none"
                 />
                 <button
                   type="button"
@@ -545,7 +599,7 @@ export default function Chat() {
                 ></button>
               </div>
             </div>
-          </div> 
+            </div> 
           {showMembers && (
             <div className="members col-start-6 row-start-1 row-span-10 border-1 border-[#33A1E040] flex flex-col divide-y divide-gray-700 overflow-y-auto p-2">
               <p className="text-green-400 font-bold">En ligne :</p>
