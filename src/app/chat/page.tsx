@@ -1,4 +1,4 @@
-import Chat from "../components/Chat.tsx";
+import Chat from "../components/Chat";
 
 export default function page() {
   return <Chat />;
