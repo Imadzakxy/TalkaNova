@@ -96,7 +96,7 @@ autoComplete="off"
             <span className="ml-2 text-[15px] lg:text-lg text-[#d0d0d0]">Remember me</span>
           </span>
           <Link href="/help">
-            <button className="forgot text-[#33A1E0] text-[15px] lg:text-lg cursor-pointer bg-transparent hover:[text-shadow:0_2px_4px_rgba(51,161,224,0.7)]">
+            <button className="forgot text-[#33A1E0] text-[10px] sm:text-[15px] lg:text-lg cursor-pointer bg-transparent hover:[text-shadow:0_2px_4px_rgba(51,161,224,0.7)]">
               Forgot password!
             </button>
           </Link>

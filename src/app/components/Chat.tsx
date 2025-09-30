@@ -282,7 +282,7 @@ export default function Chat() {
                 </div>
               </div>
 
-              <div className="all_chats flex-1 overflow-y-autot">
+              <div className="all_chats border-1 border-[#33A1E040] flex-1 overflow-y-autot">
                 {rooms.map((room) => (
                   <div
                     key={room.code}
@@ -297,7 +297,7 @@ export default function Chat() {
                 ))} 
               </div>
               
-              <div className="creat_chat p-1 border-t-1 border-[#33A1E040] flex flex-col justify-center items-center gap-2">
+              <div className="creat_chat p-1 border-l-1 border-r-1 border-[#33A1E040] flex flex-col justify-center items-center gap-2">
                 <input
                   type="text"
                   placeholder="Nom de la room"
@@ -320,7 +320,7 @@ export default function Chat() {
                 </button>
               </div>
               
-              <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
+              <div className="parameters w-full h-[10%] border-1 border-[#33A1E040] flex flex-end items-center justify-center ">
                 <div className="profile w-[20%] h-[90%] bg-center bg-cover bg-no-repeat rounded-full" 
                   style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}></div>
                   
@@ -519,7 +519,7 @@ export default function Chat() {
               </button>
             </div>
 
-            <div className="parameters w-full h-[10%] border-1 border-[#33A1E040] flex flex-end items-center justify-center ">
+            <div className="parameters w-full h-[10%] border-t-1 border-[#33A1E040] flex flex-end items-center justify-center ">
               <div 
                 className="profile w-[15px] h-[15px] sm:w-[30px] sm:h-[30px] lg:w-[43px] lg:h-[37px] bg-center bg-cover bg-no-repeat rounded-full" 
                 style={{ backgroundImage: `url(${profile?.pfp_url || '/profile.svg'})` }}
