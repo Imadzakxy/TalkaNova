@@ -237,6 +237,13 @@ export default function Chat() {
     { name: "Général", code: "room_one" }, // room par défaut
   ]);
 
+  type Chat = {
+    id: string;
+    type: string;
+    name: string;
+  };
+
+  const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomCode, setNewRoomCode] = useState("");
 
