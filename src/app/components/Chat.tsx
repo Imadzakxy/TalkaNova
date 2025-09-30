@@ -244,11 +244,10 @@ export default function Chat() {
     setShowMembers((prev) => !prev);
   };
 
-  const [rooms, setRooms] = useState<{ name: string; code: string }[]>([
+  const [rooms, setRooms] = useState<Room[]>([
     { name: "Général", code: "room_one" }, // room par défaut
   ]);
 
-  const [rooms, setRooms] = useState<Room[]>([]);
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomCode, setNewRoomCode] = useState("");
