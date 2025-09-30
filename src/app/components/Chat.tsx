@@ -48,10 +48,8 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const router = useRouter();
-  const [activeChat, setActiveChat] = useState<ActiveChat | null>({
-    id: "general",
-    type: "general",
-  });
+  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
+
   
   useEffect(() => {
     const getSessionAndProfile = async () => {
