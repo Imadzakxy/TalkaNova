@@ -296,7 +296,10 @@ export default function Chat() {
                 <h1 className="h-full flex flex-end items-center text-4xl font-sans text-[#33A1E0] [text-shadow:_0_2px_4px_#33A1E0] [--tw-text-stroke:1px_#154D71] [text-stroke:var(--tw-text-stroke)] flex-grow mr-2">
                   TalkaNova
                 </h1>
-                <button className="members w-[12%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"></button>
+                <button 
+                  onClick={() => setShowMembers(!showMembers)}
+                  className="members w-[12%] h-[75%] bg-no-repeat bg-[url('/members.svg')] bg-center bg-contain cursor-pointer flex justify-end items-center mr-2"
+                ></button>
               </div>
 
               <div className="msgs flex-1 overflow-y-auto p-2">
@@ -350,6 +353,55 @@ export default function Chat() {
                   </button>
                 </div>
               </div>
+              
+              {showMembers && (
+                <div className="absolute inset-0 bg-black/70 flex">
+                  <div className="absolute top-0 right-0 w-[80%] h-full bg-gradient-to-b from-[#041d2d] to-[#154d71] border-l border-[#33A1E040] flex flex-col p-2 overflow-y-auto">
+                    <div className="flex justify-between items-center mb-2">
+                      <button 
+                        onClick={() => setShowMembers(false)}
+                        className="text-white text-lg"
+                      >
+                        ✕
+                      </button>
+                    </div>
+
+                    <p className="text-green-400 font-bold">En ligne :</p>
+                    {userList
+                      .filter((user) => usersOnline.includes(user.id))
+                      .map((user) => (
+                        <div key={user.id} className="w-full h-11 flex items-center gap-3">
+                          <img
+                            src={user.pfp_url}
+                            alt={user.user_name}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                          <span className="text-white pt-2">{user.user_name}</span>
+                        </div>
+                      ))}
+
+                    <p className="text-gray-400 font-bold mt-2">Hors ligne :</p>
+                    {userList
+                      .filter((user) => !usersOnline.includes(user.id))
+                      .map((user) => (
+                        <div key={user.id} className="w-full h-9 flex items-center gap-2 opacity-50">
+                          <img
+                            src={user.pfp_url}
+                            alt={user.user_name}
+                            className="w-7 h-7 rounded-full object-cover"
+                          />
+                          <span className="text-white pt-2">{user.user_name}</span>
+                        </div>
+                      ))}
+                  </div>
+
+                  {/* zone clic pour fermer */}
+                  <div 
+                    className="flex-1" 
+                    onClick={() => setShowMembers(false)} 
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
