@@ -52,7 +52,11 @@ export default function Chat() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
+  const [activeChat, setActiveChat] = useState<ActiveChat>({
+    id: "room_one",     
+    type: "general",
+    name: "Général",
+  });
   const router = useRouter();
 
   useEffect(() => {
