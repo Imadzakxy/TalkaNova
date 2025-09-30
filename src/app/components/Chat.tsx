@@ -34,6 +34,13 @@ type Profile = {
   pfp_url: string;
 };
 
+type ActiveChat = {
+  id: string;
+  type: "general" | "private";
+  name?: string;
+  photo?: string;
+};
+
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
@@ -41,14 +48,9 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const router = useRouter();
-
-  const [activeChat, setActiveChat] = useState<{
-    id: string;
-    type: "general" | "private";
-    name?: string;
-    photo?: string;
-  } | null>(() => {
-    return { id: "general", type: "general" };
+  const [activeChat, setActiveChat] = useState<ActiveChat | null>({
+    id: "general",
+    type: "general",
   });
   
   useEffect(() => {
@@ -237,13 +239,6 @@ export default function Chat() {
     { name: "Général", code: "room_one" }, // room par défaut
   ]);
 
-  type Chat = {
-    id: string;
-    type: string;
-    name: string;
-  };
-
-  const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomCode, setNewRoomCode] = useState("");
 
@@ -294,7 +289,7 @@ export default function Chat() {
                   <div
                     key={room.code}
                     className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                      ${activeChat?.name === room.name ? "bg-[#154D7120]" : ""}`}
+                      ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
                     onClick={() => joinRoom(room)}
                   >
                     <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
@@ -493,7 +488,7 @@ export default function Chat() {
                 <div
                   key={room.code}
                   className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                    ${activeChat?.name === room.name ? "bg-[#154D7120]" : ""}`}
+                    ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
                   onClick={() => joinRoom(room)}
                 >
                   <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
