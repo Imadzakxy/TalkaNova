@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import client from "../config/supabsaeClient";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import type { Session } from "@supabase/supabase-js";
@@ -41,15 +40,18 @@ type ActiveChat = {
   photo?: string;
 };
 
+type Room = {
+  name: string;
+  code: string;
+};
+
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const router = useRouter();
   const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
-
   
   useEffect(() => {
     const getSessionAndProfile = async () => {
@@ -86,7 +88,7 @@ export default function Chat() {
   const fetchProfile = async (userId: string) => {
     const { data, error } = await client
       .from("profile")
-      .select("*") // récupère tout: id, user_name, pfp_url, email
+      .select("*")
       .eq("id", userId)
       .single();
 
@@ -233,7 +235,7 @@ export default function Chat() {
     setShowMembers((prev) => !prev);
   };
 
-  const [rooms, setRooms] = useState<{ name: string; code: string }[]>([
+  const [rooms, setRooms] = useState<Room[]>([
     { name: "Général", code: "room_one" }, // room par défaut
   ]);
 
