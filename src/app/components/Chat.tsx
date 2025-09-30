@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import client from "../config/supabsaeClient";
+import { useRouter } from "next/navigation";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import type { Session } from "@supabase/supabase-js";
 
@@ -52,7 +53,8 @@ export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
-  
+  const router = useRouter();
+
   useEffect(() => {
     const getSessionAndProfile = async () => {
       // Récupérer la session actuelle
