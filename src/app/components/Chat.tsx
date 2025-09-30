@@ -282,7 +282,7 @@ export default function Chat() {
                 </div>
               </div>
 
-              <div className="all_chats relative flex-1 overflow-y-autot">
+              <div className="all_chats flex-1 overflow-y-autot">
                 {rooms.map((room) => (
                   <div
                     key={room.code}
