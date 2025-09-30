@@ -252,7 +252,6 @@ export default function Chat() {
 
   const joinRoom = (room: { name: string; code: string }) => {
     setActiveChat({ id: room.code, type: "private", name: room.name });
-    window.location.reload();
   };
 
   if(session){
@@ -475,14 +474,14 @@ export default function Chat() {
                 placeholder="Nom de la room"
                 value={newRoomName}
                 onChange={(e) => setNewRoomName(e.target.value)}
-                className="p-1 text-sm rounded bg-[#154D71] text-white outline-none"
+                className="name h-[30%] w-[90%] p-1 text-sm rounded bg-[#154D71] text-white outline-none"
               />
               <input
                 type="text"
                 placeholder="Code (ex: room123)"
                 value={newRoomCode}
                 onChange={(e) => setNewRoomCode(e.target.value)}
-                className="p-1 text-sm rounded bg-[#154D71] text-white outline-none"
+                className="code h-[30%] w-[90%] p-1 text-sm rounded bg-[#154D71] text-white outline-none"
               />
               <button
                 onClick={createRoom}
