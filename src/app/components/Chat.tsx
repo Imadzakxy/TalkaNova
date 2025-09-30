@@ -34,6 +34,17 @@ type Profile = {
   pfp_url: string;
 };
 
+type Room = {
+  name: string;
+  code: string;
+};
+
+type Chat = {
+  id: string;
+  type: string;
+  name: string;
+};
+
 export default function Chat() {
   const isPc = useIsPc();
   const [session, setSession] = useState<Session | null>(null);
@@ -237,6 +248,8 @@ export default function Chat() {
     { name: "Général", code: "room_one" }, // room par défaut
   ]);
 
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomCode, setNewRoomCode] = useState("");
 
@@ -252,7 +265,7 @@ export default function Chat() {
     setNewRoomCode("");
   };
 
-  const joinRoom = (room: { name: string; code: string }) => {
+  const joinRoom = (room: Room) => {
     setActiveChat({ id: room.code, type: "private", name: room.name });
   };
 
