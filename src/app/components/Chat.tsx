@@ -51,11 +51,7 @@ export default function Chat() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [activeChat, setActiveChat] = useState<ActiveChat>({
-    id: "room_one",     
-    type: "general",
-    name: "Général",
-  });
+  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -294,7 +290,7 @@ export default function Chat() {
                   <div
                     key={room.code}
                     className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                      ${activeChat.id === room.code ? "bg-[#154D7120]" : ""}`}
+                      ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
                     onClick={() => joinRoom(room)}
                   >
                     <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
@@ -493,7 +489,7 @@ export default function Chat() {
                 <div
                   key={room.code}
                   className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                    ${activeChat.id === room.code ? "bg-[#154D7120]" : ""}`}
+                    ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
                   onClick={() => joinRoom(room)}
                 >
                   <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
