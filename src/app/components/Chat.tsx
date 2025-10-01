@@ -51,10 +51,7 @@ export default function Chat() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null) as [
-    ActiveChat | null,
-    React.Dispatch<React.SetStateAction<ActiveChat | null>>
-  ];
+  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -491,8 +488,7 @@ export default function Chat() {
               {rooms.map((room: Room) => (
                 <div
                   key={room.code}
-                  className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                    ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
+                  className="room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center"
                   onClick={() => joinRoom(room)}
                 >
                   <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
