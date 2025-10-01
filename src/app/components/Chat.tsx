@@ -35,7 +35,7 @@ type Profile = {
 };
 
 type ActiveChat = {
-  id?: string;
+  id: string;
   type: "general" | "private";
   name?: string;
 };
