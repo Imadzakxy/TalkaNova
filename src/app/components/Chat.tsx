@@ -289,8 +289,7 @@ export default function Chat() {
                 {rooms.map((room: Room) => (
                   <div
                     key={room.code}
-                    className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
-                      ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
+                    className="room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center"
                     onClick={() => joinRoom(room)}
                   >
                     <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
@@ -488,7 +487,8 @@ export default function Chat() {
               {rooms.map((room: Room) => (
                 <div
                   key={room.code}
-                  className="room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center"
+                  className={`room w-full py-2 border-b border-[#33A1E040] cursor-pointer flex items-center
+                    ${activeChat?.id === room.code ? "bg-[#154D7120]" : ""}`}
                   onClick={() => joinRoom(room)}
                 >
                   <p className="text-[#33A1E0] text-sm sm:text-lg lg:text-xl font-bold p-1 ml-2">
