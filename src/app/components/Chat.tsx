@@ -51,7 +51,10 @@ export default function Chat() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);
+  const [activeChat, setActiveChat] = useState<ActiveChat | null>(null) as [
+    ActiveChat | null,
+    React.Dispatch<React.SetStateAction<ActiveChat | null>>
+  ];
   const router = useRouter();
 
   useEffect(() => {
