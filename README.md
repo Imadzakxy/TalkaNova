@@ -1,37 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 TalkaNova
 
-## Getting Started
+**TalkaNova** est une application de messagerie moderne construite avec **Next.js**, **TypeScript**, **TailwindCSS** et **Supabase**.  
+Elle permet de discuter en temps réel via un chat général, des conversations privées entre amis et des salons éphémères protégés par un code.
 
-First, run the development server:
+🌐 Hébergée sur **Vercel**  
+⚡ Gestion des comptes et messages avec **Supabase (Realtime + Auth)**  
+
+---
+
+## ✨ Fonctionnalités
+
+- 🔐 **Authentification** via Supabase (création de compte, connexion, déconnexion)  
+- 💬 **Chat général** ouvert à tous les utilisateurs connectés  
+- 🔑 **Salons privés temporaires** avec un code unique à partager entre amis  
+- ⚡ **Messagerie en temps réel** grâce à Supabase Realtime & WebSockets  
+- 🎨 **Interface responsive & moderne** avec TailwindCSS  
+- ☁️ **Déploiement sur Vercel**  
+
+---
+
+## 🛠️ Stack technique
+
+- [Next.js](https://nextjs.org/) — Framework React moderne  
+- [TypeScript](https://www.typescriptlang.org/) — Typage statique et robustesse du code  
+- [TailwindCSS](https://tailwindcss.com/) — UI rapide et responsive  
+- [Supabase](https://supabase.com/) — Authentification + Realtime Database + WebSocket  
+- [Vercel](https://vercel.com/) — Déploiement cloud  
+
+---
+
+## ⚙️ Installation & lancement local
+
+### Prérequis
+- [Node.js](https://nodejs.org/en/)  
+- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)  
+- Un compte [Supabase](https://supabase.com/)  
+
+### Étapes
 
 ```bash
+# Cloner le projet
+git clone https://github.com/Imadzakxy/TalkaNova.git
+
+# Aller dans le dossier
+cd TalkaNova
+
+# Installer les dépendances
+npm install
+# ou
+yarn install
+
+# Lancer en mode développement
 npm run dev
-# or
+# ou
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# TalkaNova
